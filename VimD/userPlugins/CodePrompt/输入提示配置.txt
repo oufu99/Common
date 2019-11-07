@@ -1,0 +1,5 @@
+﻿icataN---insert into tb_customer_catalog (`manufacturer_id`,`name`,`parent_id`,`parent_str`,`is_active`,`identity_img`,`audit_type`,`auditor`,`IsStatus`,`brand_id`,`sort`,`remark`) values (10022,'钻代',0,',0,12,',1,'',1,0,0,0,0,'')
+
+iruleN---INSERT INTO `ymt.ws_sys`.`tb_rule_mapping_class`` (`ManuId`, `ClassName`, `Json`, `filter_keyword`, `new_url`) VALUES (%ManuId%, 'pcRedirect', NULL, '/agent/pay', '/youzuan/agent/pay')
+
+ 

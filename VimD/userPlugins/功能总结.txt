@@ -1,0 +1,56 @@
+
+; return 要放在If的外面,不然会穿透继续执行
+`这个是转义符,如果要输入他要两个`,如``
+
+取消在某个程序中生效
+JKMove
+
+发送一大串文本
+SendInput {Text} 123木头人  
+
+判断前一个字母是不是某个数字
+JKMove
+
+方法说明
+if   WinExist("ahk_exe Ssms.exe") ; 判断是否存在
+
+if  WinExist("ahk_exe Ssms.exe")  ; 存在就最大化
+{
+  WinMaximize 
+}
+
+多个窗口都是用同一个热键
+#IfWinActive 用户登录 ‎- Microsoft Edge 
+::!a::
+#IfWinActive 用户登录 - Google Chrome 
+::!a::
+	Send,{Raw}admin
+	Send,{Tab}
+	Send,{Raw}PT_DSe/XycOhQW_Q8Cu5tIZg_sg
+	Send,{Enter}	
+Return
+
+^p::    正则表达
+ SetTitleMatchMode RegEx
+SetTitleMatchMode Fast
+if WinExist(".*等[\d]个会话")  ; 正则匹配
+
+
+; 剪切板
+clipboard = my text   
+Send,%clipboard%
+ 
+; 提示框
+InputBox, OutputVar, 输入1打开百度2打开zhihu
+if (OutputVar="1")
+  run, http://www.baidu.com
+  Return
+if (OutputVar="2")
+run, http://www.zhihu.com
+else
+	 MsgBox, 你说了%OutputVar%`.
+
+
+判断键是否按下 判断大写状态   jkCode
+
+操作剪切板 shortCode
