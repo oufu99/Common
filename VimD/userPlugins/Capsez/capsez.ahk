@@ -979,7 +979,7 @@ Tab & k:: SendInput,{Blind}{Up}
 `; & f::SendInput public{Space}{Space}void{Space}{Space}Func(){Enter}{{}{Enter}{Enter}{}}{Up}
 
 `; & z::SendInput, {Ctrl Down}{Shift Down}{Alt Down}{F12}{Ctrl Up}{Shift Up}{Alt Up}
-`; & t::SendInput, {Ctrl Down}{Shift Down}{Alt Down}{F11}{Ctrl Up}{Shift Up}{Alt Up}
+`; & t::SendInput, {Ctrl Down}[s{Ctrl Up}
 
 
 #IfWinActive
