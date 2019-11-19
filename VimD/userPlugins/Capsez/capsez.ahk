@@ -958,13 +958,7 @@ CapsLock & (::Send, (){Left}
 CapsLock & x::SendInput,`<`>{Left}
 CapsLock & w::SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
 
-CapsLock & t::
-IfWinExist, Notepad++
-    WinActivate ; 使用前面找到的窗口
-else
-   Run, C:\Program Files (x86)\Notepad++\notepad++.exe
-   WinActivate ; 
-Return
+
 
 ; Vs之前的现在改为通用
  
@@ -991,6 +985,7 @@ Tab & k:: SendInput,{Blind}{Up}
 #IfWinActive
 
 ;************** 自定义结束 **************
+
 ^!#r:: 
 	;<==关闭hint模式键
 	;down:=(down) ? 0 : 1
