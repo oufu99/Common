@@ -935,7 +935,6 @@ CapsLock & Space:: send,{Backspace}
 
 ;************** 自定义开始 **************
 
-; 删除了  CapsLock & `;
 ; 调整了  直接在这文件中搜索 调用任务栏相关程序快捷键
 ; ;+空格 改成了BackSpace
 ; ;+z 去掉了 免得冲突Vs的按键
@@ -945,35 +944,53 @@ CapsLock & Space:: send,{Backspace}
 ;************** 代码开始 **************
 
 CapsLock & d::SendInput,{End}{Shift Down}{Home}{Shift Up}{Backspace}{Home}{Backspace}
+; 通用的情况很有可能按错成l 只有在Vs中才能用到;
 CapsLock & `;::SendInput,{Right}
-CapsLock & '::SendInput,""{Left}
 
 `; & d::SendInput,{End}+{Home}{Backspace}
 `; & b::SendInput,{Home}
 `; & e::SendInput,{End}
+
+
+; 自动完成括号等开始
+CapsLock & i::SendInput,(){Left}
 CapsLock & <::SendInput,`<`>{Left}
 ; 大括号很特殊 需要这么输出才行
 CapsLock & [::Send, {{}{}}{Left}
+CapsLock & '::SendInput,""{Left}
 CapsLock & (::Send, (){Left}
 CapsLock & x::SendInput,`<`>{Left}
 CapsLock & w::SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
+; 自动完成括号等结束
 
 
-
-; Vs之前的现在改为通用
- 
-
-CapsLock & i::SendInput,""{Left}
 :*:jw::{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
- 
 
 Tab & h:: SendInput,{Blind}{Left}
 Tab & j:: SendInput,{Blind}{Down}
 Tab & l:: SendInput,{Blind}{Right}
 Tab & k:: SendInput,{Blind}{Up}
 
+;复制粘贴相关开始
 
-; Vs中生效
+`; & a::SendInput,{Home}+{End}
+`; & c::
+	GV_KeyClickAction1 := "SendInput,^c"
+	GV_KeyClickAction2 := "SendInput,{Home}+{End}^c"
+	GoSub,Sub_KeyClick123
+return
+
+
+
+`; & v::
+	GV_KeyClickAction1 := "SendInput,^v"
+	GV_KeyClickAction2 := "SendInput,^{Home}^+{End}^v"
+	GoSub,Sub_KeyClick123
+return
+;复制粘贴相关结束
+
+
+; Vs中生效开始
 #IfWinActive, ahk_exe devenv.exe
 
 `; & f::SendInput public{Space}{Space}void{Space}{Space}Func(){Enter}{{}{Enter}{Enter}{}}{Up}
@@ -981,8 +998,10 @@ Tab & k:: SendInput,{Blind}{Up}
 `; & z::SendInput, {Ctrl Down}{Shift Down}{Alt Down}{F12}{Ctrl Up}{Shift Up}{Alt Up}
 `; & t::SendInput, {Ctrl Down}[s{Ctrl Up}
 
+CapsLock & `;::SendInput,{End};
 
 #IfWinActive
+; Vs中生效 结束
 
 ;************** 自定义结束 **************
 
@@ -1036,20 +1055,6 @@ Return
 
 
 
-`; & c::
-	GV_KeyClickAction1 := "SendInput,^c"
-	GV_KeyClickAction2 := "SendInput,^{Home}^+{End}^c"
-	GoSub,Sub_KeyClick123
-return
-
-
-
-`; & v::
-	GV_KeyClickAction1 := "SendInput,^v"
-	GV_KeyClickAction2 := "SendInput,^{Home}^+{End}^v"
-	GoSub,Sub_KeyClick123
-return
-
 ;粘贴然后回车，多用在搜索框等输入的位置
 `; & p::
 `; & g::
@@ -1061,9 +1066,7 @@ return
 
 
 
-;清空复制粘贴
 
-`; & a::SendInput,^{Home}^+{End}{Delete}
 
 ;粘贴并转到,多数浏览器和tc中都可用
 `; & u:: send,^t!d^v{Enter}
