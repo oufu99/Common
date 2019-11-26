@@ -990,7 +990,7 @@ return
 ;复制粘贴相关结束
 
 
-; Vs中生效开始
+; Vs中生效开始  Vs开始
 #IfWinActive, ahk_exe devenv.exe
 
 `; & f::SendInput public{Space}{Space}void{Space}{Space}Func(){Enter}{{}{Enter}{Enter}{}}{Up}
@@ -1000,6 +1000,19 @@ return
 
 CapsLock & `;::SendInput,{End};
 
+; ctrl+单击跳转到定义 
+^RButton::
+  Send,{Click}{Ctrl Down}{F12}{Ctrl Up}
+Return
+
+^LButton::
+  Send,{Click}{F12}
+Return
+
+::jp::
+SendInput {Text} JSON.parse();
+Send,{Left 2}
+Return
 #IfWinActive
 ; Vs中生效 结束
 
