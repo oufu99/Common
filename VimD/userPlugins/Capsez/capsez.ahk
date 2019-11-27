@@ -81,14 +81,63 @@ GroupAdd,GroupDiagOpenAndSave,选择文件 ahk_class #32770
 ;设定15分钟重启一次脚本，防止卡键 1000*60*15
 GV_ReloadTimer := % 1000*60*5
 
-;如果是自己从tc中启动的本脚本，将会自动带上COMMANDER_PATH
-;但如果是别的地方，比如注册表的autorun环节先启动的本脚本，那么就有必要先设置这个变量
-;COMMANDER_PATH := % GF_GetSysVar("COMMANDER_PATH")
+
 ;if COMMANDER_PATH = 
 ;{
+;msgbox % COMMANDER_PATH
 ;COMMANDER_PATH := "D:\totalcmd_bar"
 ;EnvSet,COMMANDER_PATH,D:\totalcmd_bar
 ;}
+
+;如果是自己从tc中启动的本脚本，将会自动带上COMMANDER_PATH
+;但如果是别的地方，比如注册表的autorun环节先启动的本脚本，那么就有必要先设置这个变量
+;1、先启动脚本，正常是随系统自启动，那么COMMANDER_PATH为空
+;2、再启动tc，那么COMMANDER_PATH变量还是为空，可以读取运行中的exe路径
+;3、最后再是根据脚本所在目录中是否存在TOTALCMD.EXE或者TOTALCMD64.EXE
+WinGet,TcExeFullPath,ProcessPath,ahk_class TTOTAL_CMD
+;msgbox % A_WorkingDir
+;msgbox % TcExeFullPath==""
+;msgbox % COMMANDER_PATH=""
+;msgbox %TcExeFullPath%
+
+if !TcExeFullPath ;没tc在运行
+{
+	if A_Is64bitOS {
+		if FileExist(A_WorkingDir . "\" . "TOTALCMD64.EXE") {
+			TcExeFullPath := A_WorkingDir . "\" . "TOTALCMD64.EXE"
+			EnvSet,COMMANDER_PATH, A_WorkingDir
+		} else if FileExist(A_WorkingDir . "\" . "TOTALCMD.EXE") {
+			TcExeFullPath := A_WorkingDir . "\" . "TOTALCMD.EXE"
+			EnvSet,COMMANDER_PATH, A_WorkingDir
+		} else{
+			toolTip 当前目录下没Totalcmd程序
+			sleep 2000
+			tooltip
+		}
+	}
+	else {
+		if FileExist(A_WorkingDir . "\" . "TOTALCMD.EXE") {
+			TcExeFullPath := A_WorkingDir . "\" . "TOTALCMD.EXE"
+			EnvSet,COMMANDER_PATH, A_WorkingDir
+		} else {
+			toolTip 当前目录下没Totalcmd程序
+			sleep 2000
+			tooltip
+		}
+	}
+}
+else{ ;有tc在运行
+	if !COMMANDER_PATH  ;但脚本先启动，比如随系统自启动，所以并没有COMMANDER_PATH变量
+	{
+		WinGet,TcExeName,ProcessName,ahk_class TTOTAL_CMD
+		StringTrimRight, COMMANDER_PATH, TcExeFullPath, StrLen(TcExeName)+1
+		EnvSet,COMMANDER_PATH, % COMMANDER_PATH
+	}
+	else{
+		;有TcExeFullPath 也有COMMANDER_PATH了，
+		;msgbox 啥都不做
+	}
+}
 
 ;GV_ToolsPath := % GF_GetSysVar("ToolsPath")
 GV_TempPath := % GF_GetSysVar("TEMP")
@@ -910,17 +959,12 @@ KeyCapsLockV:
 	CapsLockV_presses = 0
 return
 ;***************** 剪贴板相关$ **************
-CapsLock & c::
-	GoSub,Sub_ClipAppend
-return
 
 CapsLock & r:: SendInput,{Blind}^r
 
 CapsLock & n:: send,{Blind}^+{Tab}
 CapsLock & m:: send,{Blind}^{Tab}
 
-;CapsLock & y:: send,{AppsKey}
-CapsLock & y:: Send {Click Right}
 
 CapsLock & .:: AltTab
 CapsLock & ,:: ShiftAltTab
@@ -931,6 +975,8 @@ CapsLock & ,:: ShiftAltTab
 CapsLock & Enter:: GoSub,Sub_MaxRestore
 ;CapsLock & Space:: WinMinimize A
 CapsLock & Space:: send,{Backspace}
+
+
 
 
 ;************** 自定义开始 **************
@@ -951,6 +997,8 @@ CapsLock & `;::SendInput,{Right}
 `; & b::SendInput,{Home}
 `; & e::SendInput,{End}
 
+^y::Send,{Click Right}
+ 
 
 ; 自动完成括号等开始
 CapsLock & i::SendInput,(){Left}
@@ -971,6 +1019,8 @@ Tab & j:: SendInput,{Blind}{Down}
 Tab & l:: SendInput,{Blind}{Right}
 Tab & k:: SendInput,{Blind}{Up}
 
+`; & z::SendInput,{Ctrl Down}z{Ctrl Up}
+
 ;复制粘贴相关开始
 
 `; & a::SendInput,{Home}+{End}
@@ -979,7 +1029,6 @@ Tab & k:: SendInput,{Blind}{Up}
 	GV_KeyClickAction2 := "SendInput,{Home}+{End}^c"
 	GoSub,Sub_KeyClick123
 return
-
 
 
 `; & v::
@@ -1492,6 +1541,99 @@ return
 ; 	Run, C:\Program Files (x86)\Notepad++\notepad++.exe
 ; return
 
+;把资源管理器中选中的文件用tc打开  {{{2
+;Win10的资源管理器
+;资源管理器
+#If WinActive("ahk_class CabinetWClass") or WinActive("ahk_class ExploreWClass")
+{
+	!w::
+		selected := Explorer_Get("",true)
+		selected := """" selected """"
+		if TcExeFullPath {
+			run, %TcExeFullPath% /T /O /S /A /L=%selected%
+		}
+	return
+}
+;桌面
+#If WinActive("ahk_class Progman") or WinActive("ahk_class WorkerW")
+{
+	!w::
+		selected := Explorer_Get("",true)
+		selected := """" selected """"
+		if TcExeFullPath {
+			run, %TcExeFullPath% /T /O /S /A /L=%selected%
+		}
+	return
+}
+
+;用到的函数
+Explorer_GetPath(hwnd="")
+{
+	if !(window := Explorer_GetWindow(hwnd))
+		return ErrorLevel := "ERROR"
+	if (window="desktop")
+		return A_Desktop
+	path := window.LocationURL
+	path := RegExReplace(path, "ftp://.*@","ftp://")
+	StringReplace, path, path, file:///
+	StringReplace, path, path, /, \, All
+	; thanks to polyethene
+	Loop
+		If RegExMatch(path, "i)(?<=%)[\da-f]{1,2}", hex)
+			StringReplace, path, path, `%%hex%, % Chr("0x" . hex), All
+		Else Break
+	return path
+}
+
+Explorer_GetWindow(hwnd="")
+{
+	WinGet, process, processName, % "ahk_id" hwnd := hwnd? hwnd:WinExist("A")
+	WinGetClass class, ahk_id %hwnd%
+
+	if (process!="explorer.exe")
+		return
+	if (class ~= "(Cabinet|Explore)WClass")
+	{
+		for window in ComObjCreate("Shell.Application").Windows
+			if (window.hwnd==hwnd)
+				return window
+	}
+	else if (class ~= "Progman|WorkerW")
+		return "desktop"
+}
+
+
+Explorer_Get(hwnd="",selection=false)
+{
+	if !(window := Explorer_GetWindow(hwnd))
+		return ErrorLevel := "ERROR"
+	if (window="desktop")
+	{
+		ControlGet, hwWindow, HWND,, SysListView321, ahk_class Progman
+		if !hwWindow
+			ControlGet, hwWindow, HWND,, SysListView321, A
+		ControlGet, files, List, % ( selection ? "Selected":"") "Col1",,ahk_id %hwWindow%
+		base := SubStr(A_Desktop,0,1)=="\" ? SubStr(A_Desktop,1,-1) : A_Desktop
+		Loop, Parse, files, `n, `r
+		{
+			path := base "\" A_LoopField
+			IfExist %path%
+				ret .= path "`n"
+		}
+	}
+	else
+	{
+		if selection
+			collection := window.document.SelectedItems
+		else
+			collection := window.document.Folder.Items
+		for item in collection
+			ret .= item.path "`n"
+	}
+	return Trim(ret,"`n")
+}
+
+
 
 #IfWinActive ahk_class TXGuiFoundation       ;QQ,Tim
 {
@@ -1574,7 +1716,6 @@ F1::Send,!p{tab}{enter}e
 		else
 			send,`,
 	return
-	CapsLock & y:: send,{AppsKey}
 	/*
 	   [:: send,{Home}{Down}
 	 */
