@@ -1063,7 +1063,7 @@ Return
 `; & n:: SendInput,{Blind}{PgDn}
 `; & m:: SendInput,{Blind}{PgUp}
 
-`; & Space:: SendInput,{Backspace}
+`; & Space:: SendInput,{Delete}
 `; & s:: SendInput,{End}{Shift Down}{Home}{Shift Up}
 
 
