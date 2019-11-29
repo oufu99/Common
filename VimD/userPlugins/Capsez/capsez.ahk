@@ -999,7 +999,7 @@ CapsLock & `;::SendInput,{Right}
 
 ^y::Send,{Click Right}
  
-
+CapsLock & p::SendInput,{Shift}
 ; 自动完成括号等开始
 CapsLock & i::SendInput,(){Left}
 CapsLock & <::SendInput,`<`>{Left}
