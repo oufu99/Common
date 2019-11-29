@@ -110,7 +110,7 @@ if !TcExeFullPath ;没tc在运行
 			TcExeFullPath := A_WorkingDir . "\" . "TOTALCMD.EXE"
 			EnvSet,COMMANDER_PATH, A_WorkingDir
 		} else{
-			toolTip 当前目录下没Totalcmd程序
+			toolTip  
 			sleep 2000
 			tooltip
 		}
@@ -120,7 +120,7 @@ if !TcExeFullPath ;没tc在运行
 			TcExeFullPath := A_WorkingDir . "\" . "TOTALCMD.EXE"
 			EnvSet,COMMANDER_PATH, A_WorkingDir
 		} else {
-			toolTip 当前目录下没Totalcmd程序
+			toolTip  
 			sleep 2000
 			tooltip
 		}
