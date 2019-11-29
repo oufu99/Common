@@ -1547,8 +1547,12 @@ return
 #If WinActive("ahk_class CabinetWClass") or WinActive("ahk_class ExploreWClass")
 {
 	!w::
-		selected := Explorer_Get("",true)
-		selected := """" selected """"
+		selected := ExplorerInfo(2)
+		if(selected="")
+		{
+		  selected := ExplorerInfo()
+		}
+	
 		if TcExeFullPath {
 			run, %TcExeFullPath% /T /O /S /A /L=%selected%
 		}
@@ -1558,81 +1562,114 @@ return
 #If WinActive("ahk_class Progman") or WinActive("ahk_class WorkerW")
 {
 	!w::
-		selected := Explorer_Get("",true)
-		selected := """" selected """"
+		selected := ExplorerInfo(2)
+		if(selected="")
+		{
+		  selected := ExplorerInfo()
+		}
+	
 		if TcExeFullPath {
 			run, %TcExeFullPath% /T /O /S /A /L=%selected%
 		}
 	return
 }
-
-;用到的函数
-Explorer_GetPath(hwnd="")
+ 
+ 
+ExplorerInfo(mode="",hwnd="") { ;Method="当前目录"的时候只返回当前目录;
+;mode默认空值时,不论是否选中文件/文件夹皆返回当前路径(目录名);
+;mode=0时,若选择了文件/文件夹则返回选中的目录名,不无选中时返回空;
+;mode=1时,若选择了文件/文件夹则返回完成路径+文件名,无选中时返回目录名;
+;mode=2时,若选择了文件/文件夹则返回完成路径+文件名,无选中时返回空值;
+ 
+;@感谢Quant的原始代码
+Toreturn=
+filenum1=0
+filenum2=0
+WinGet, Process, ProcessName, % "ahk_id " (hwnd := hwnd? hwnd:WinExist("A")) ;这个地方判断是否给定了hwnd值,如果给定的为空,则获取当前窗口的句柄；否则就使用给定的句柄。
+;得出给定句柄对应的进程名称；
+WinGetClass class, ahk_id %hwnd% ;根据句柄来获取对应hwnd的窗口的类名；
+ComObjError(0) ;不显示对象显示的错误。
+if (Process = "explorer.exe") ;如果进程为explorer则进行判断到底时处于桌面（Progman|WorkerW）还是资源管理器（(Cabinet|Explore)WClass）；
+if (class ~= "Progman|WorkerW")
 {
-	if !(window := Explorer_GetWindow(hwnd))
-		return ErrorLevel := "ERROR"
-	if (window="desktop")
-		return A_Desktop
-	path := window.LocationURL
-	path := RegExReplace(path, "ftp://.*@","ftp://")
-	StringReplace, path, path, file:///
-	StringReplace, path, path, /, \, All
-	; thanks to polyethene
-	Loop
-		If RegExMatch(path, "i)(?<=%)[\da-f]{1,2}", hex)
-			StringReplace, path, path, `%%hex%, % Chr("0x" . hex), All
-		Else Break
-	return path
-}
-
-Explorer_GetWindow(hwnd="")
+ControlGet, files, List, Selected Col1, SysListView321, ahk_class %class% ;获取选中的文件的列表[无法获取到扩展名]
+if files=
+Toreturn .= A_Desktop
+else
 {
-	WinGet, process, processName, % "ahk_id" hwnd := hwnd? hwnd:WinExist("A")
-	WinGetClass class, ahk_id %hwnd%
-
-	if (process!="explorer.exe")
-		return
-	if (class ~= "(Cabinet|Explore)WClass")
-	{
-		for window in ComObjCreate("Shell.Application").Windows
-			if (window.hwnd==hwnd)
-				return window
-	}
-	else if (class ~= "Progman|WorkerW")
-		return "desktop"
+filenum1++
+Loop, Parse, files, `n, `r
+Toreturn .= A_Desktop "\" A_LoopField "`n"
 }
-
-
-Explorer_Get(hwnd="",selection=false)
+}
+else if (class ~= "(Cabinet|Explore)WClass")
 {
-	if !(window := Explorer_GetWindow(hwnd))
-		return ErrorLevel := "ERROR"
-	if (window="desktop")
-	{
-		ControlGet, hwWindow, HWND,, SysListView321, ahk_class Progman
-		if !hwWindow
-			ControlGet, hwWindow, HWND,, SysListView321, A
-		ControlGet, files, List, % ( selection ? "Selected":"") "Col1",,ahk_id %hwWindow%
-		base := SubStr(A_Desktop,0,1)=="\" ? SubStr(A_Desktop,1,-1) : A_Desktop
-		Loop, Parse, files, `n, `r
-		{
-			path := base "\" A_LoopField
-			IfExist %path%
-				ret .= path "`n"
-		}
-	}
-	else
-	{
-		if selection
-			collection := window.document.SelectedItems
-		else
-			collection := window.document.Folder.Items
-		for item in collection
-			ret .= item.path "`n"
-	}
-	return Trim(ret,"`n")
+for window in ComObjCreate("Shell.Application").Windows ;遍历当前资源管理器中打开的窗口；
+{
+if (window.hwnd==hwnd) ;在多个窗口中取定位符合前面hwnd的哪个窗口；
+{
+pp:=window.Document.folder.self.path
+sel := window.Document.SelectedItems
+for item in sel
+{
+filenum2++
+Toreturn .= item.path "`r`n"
 }
-
+if Toreturn=
+Toreturn:=pp
+}
+}
+}
+ 
+fde:=Trim(Toreturn,"`r`n") ;完整的路径和文件名,包括扩展名;
+if mode<> ;mode为012时
+{
+if (filenum1+filenum2=0)
+{
+if (mode=0)||(mode=2)
+{
+return
+}
+else ;mod=1时的情况;
+return fde
+}else
+{
+if (mode=1) or (mode=2)
+if (filenum1<>0)
+{
+aa:=选定的文件()
+return aa ;选定的文件()
+}
+else
+return fde
+}
+}
+if InStr(FileExist(fde), "D") ;这里判断目录
+return,RegExReplace(Trim(Toreturn,"`r`n") . "\","\\\\","\") ;这里的. "\"是给选定的文件夹加上\
+else if Toreturn<>
+{
+StringMid,Toreturn2, Toreturn,1,InStr(Toreturn,"\",,0)-1 ;如果不是目录则按最后一个反斜杠进行截取,取前面的目录；
+return RegExReplace(Toreturn2 . "\","\\\\","\")
+}
+}
+ 
+选定的文件(){
+Clip:=ClipboardAll
+Clipboard=
+send ^c
+ClipWait,0.5
+cliptem:=Clipboard
+if (StrSplit(Cliptem,"`r").MaxIndex()=1)
+{
+Clipboard:= % Clip
+return RegExReplace(cliptem,"`r`n","")
+}
+else
+{
+Clipboard:= % Clip
+return cliptem
+}}
+ 
 
 
 #IfWinActive ahk_class TXGuiFoundation       ;QQ,Tim
