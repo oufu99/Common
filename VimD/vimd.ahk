@@ -21,9 +21,9 @@ FileEncoding, utf-8
 
 Menu, Tray, Icon, %A_ScriptDir%\viatc.ico
 Menu, Tray, NoStandard
-Menu, Tray, Add, 查看热键	(&K), <vc_Keymap>
-Menu, Tray, Add, 查看插件	(&P), <vc_Plugin>
-Menu, Tray, Add, 
+; Menu, Tray, Add, 查看热键	(&K), <vc_Keymap>
+; Menu, Tray, Add, 查看插件	(&P), <vc_Plugin>
+; Menu, Tray, Add, 
 Menu, Tray, Add, 重启	(&R), <Reload>
 Menu, Tray, Add, 退出	(&X), <Exit>
 iniWrite, %A_ScriptHwnd%, %A_Temp%\vimd_auto.ini, auto, hwnd
@@ -258,14 +258,14 @@ RunAsAdmin()
 #Include %A_ScriptDir%\core\class_vim.ahk
 #Include %A_ScriptDir%\core\VimDConfig.ahk
 #Include %A_ScriptDir%\lib\class_EasyINI.ahk
-#Include %A_ScriptDir%\lib\acc.ahk
-#Include %A_ScriptDir%\lib\acc.ahk
+; #Include %A_ScriptDir%\lib\acc.ahk
+; #Include %A_ScriptDir%\lib\acc.ahk
 #Include %A_ScriptDir%\lib\ini.ahk
-#Include %A_ScriptDir%\lib\gdip.ahk
-#Include %A_ScriptDir%\lib\Logger.ahk
-#Include %A_ScriptDir%\lib\AdjustBrightness.ahk
-#Include %A_ScriptDir%\lib\隐藏&显示鼠标.ahk
-#Include %A_ScriptDir%\lib\Taskbar.ahk
+; #Include %A_ScriptDir%\lib\gdip.ahk
+; #Include %A_ScriptDir%\lib\Logger.ahk
+; #Include %A_ScriptDir%\lib\AdjustBrightness.ahk
+; #Include %A_ScriptDir%\lib\隐藏&显示鼠标.ahk
+; #Include %A_ScriptDir%\lib\Taskbar.ahk
 #Include %A_ScriptDir%\plugins\plugins.ahk
 
 
