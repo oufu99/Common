@@ -21,25 +21,37 @@ Return
 #If WinActive("ahk_class CabinetWClass") or WinActive("ahk_class ExploreWClass")
 {
 	!w::
+		selected := ExplorerInfo(1)
+		
+		 run, D:\MyLove\TotalCommand\Totalcmd64.exe /T /O /P=R /S /A /R=%selected%
+	return
+	
+	w::
 		selected := ExplorerInfo(2)
 		if(selected="")
 		{
-		  selected := ExplorerInfo()
+		  Send,w
+		  return
 		}
-	
-		 run, D:\MyLove\TotalCommand\Totalcmd64.exe /T /O /P=R /S /A /R=%selected%
+		 run, C:\Program Files\Notepad++\notepad++.exe %selected%
 	return
 }
 ;×ÀÃæ
 #If WinActive("ahk_class Progman") or WinActive("ahk_class WorkerW")
 {
 	!w::
+		selected := ExplorerInfo(1)
+	    run, D:\MyLove\TotalCommand\Totalcmd64.exe /T /O /P=R /S /A /R=%selected%
+	return
+	
+	w::
 		selected := ExplorerInfo(2)
 		if(selected="")
 		{
-		  selected := ExplorerInfo()
+		  Send,w
+		  return
 		}
-	    run, D:\MyLove\TotalCommand\Totalcmd64.exe /T /O /P=R /S /A /R=%selected%
+		 run, C:\Program Files\Notepad++\notepad++.exe %selected%
 	return
 }
 
