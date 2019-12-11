@@ -1454,75 +1454,9 @@ w:: SendInput,^w
 #h::run, cmd
 ;管理员权限cmd
 ^#h::run, *RunAs cmd
-#c::run %COMMANDER_PATH%\Tools\notepad\Notepad.exe /c
-
-;************** 记事本 ************** {{{1
-
-;启动记事本并去标题等 {{{3
-#n::
-	run %COMMANDER_PATH%\Tools\notepad\Notepad.exe /f %COMMANDER_PATH%\Tools\notepad\Lite.ini, , , OutputVarPID
-	sleep 100
-	WinWait ahk_pid %OutputVarPID%
-	if ErrorLevel
-	{
-		MsgBox, WinWait timed out.
-		return
-	}
-	else
-	{
-		PID = %OutputVarPID%
-		WinGet, ThisHWND, ID, ahk_pid %PID% 
-		;设置位置和大小, x,y,width,height
-		;WinMove, ahk_id %ThisHWND%,, 700,400,550,350
-		WinMove, ahk_id %ThisHWND%,, 700,600,310,144
-		;WinMove, ahk_pid %PID%,, 700,400,550,350
-		;去标题
-		WinSet, Style, ^0xC00000, ahk_pid %PID%
-		;不能改变大小
-		;WinSet, Style, ^0x40000, ahk_pid %PID%
-		;去菜单
-		DllCall("SetMenu", "Ptr", ThisHWND, "Ptr", 0)
-		;顶端
-		;Winset, Alwaysontop, On,  ahk_pid %PID%
-	}
-return
-
-;启动记事本并去标题等，并收集剪贴板 {{{3
-^#b::
-	run %COMMANDER_PATH%\Tools\notepad\Notepad.exe /b /f %COMMANDER_PATH%\Tools\notepad\Lite.ini, , , OutputVarPID
-	sleep 100
-	WinWait ahk_pid %OutputVarPID%
-	if ErrorLevel
-	{
-		MsgBox, WinWait timed out.
-		return
-	}
-	else
-	{
-		PID = %OutputVarPID%
-		WinGet, ThisHWND, ID, ahk_pid %PID% 
-		;设置位置和大小, x,y,width,height
-		;WinMove, ahk_id %ThisHWND%,, 700,400,550,350
-		WinMove, ahk_id %ThisHWND%,, 700,600,310,144
-		;WinMove, ahk_pid %PID%,, 700,400,550,350
-		;去标题
-		WinSet, Style, ^0xC00000, ahk_pid %PID%
-		;不能改变大小
-		;WinSet, Style, ^0x40000, ahk_pid %PID%
-		;去菜单
-		DllCall("SetMenu", "Ptr", ThisHWND, "Ptr", 0)
-		;顶端
-		;Winset, Alwaysontop, On,  ahk_pid %PID%
-	}
-return
 
 
-
-;************** 小菜单例子 ************** {{{2
-;建议的绿色便携的小菜单程序PopSel
-;#z::run %COMMANDER_PATH%\Tools\popsel\PopSel.exe /pc /n /is
-;#RButton::run %COMMANDER_PATH%\Tools\popsel\PopSel.exe /n
-
+ 
 
 ;************** 各程序快捷键或功能 ************** {{{1
 ;调用任务栏相关程序快捷键 {{{2
