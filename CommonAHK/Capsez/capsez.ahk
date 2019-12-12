@@ -960,8 +960,6 @@ KeyCapsLockV:
 return
 ;***************** 剪贴板相关$ **************
 
-CapsLock & r:: SendInput,{Blind}^r
-
 CapsLock & n:: send,{Blind}^+{Tab}
 CapsLock & m:: send,{Blind}^{Tab}
 
@@ -980,7 +978,7 @@ CapsLock & Space:: send,{Backspace}
 
 
 ;************** 自定义开始 **************
-
+;  CapsLock & d   用于复制
 ; 调整了  直接在这文件中搜索 调用任务栏相关程序快捷键
 ; ;+空格 改成了BackSpace
 ; ;+z 去掉了 免得冲突Vs的按键
@@ -999,7 +997,8 @@ CapsLock & `;::SendInput,{Right}
 
 ^y::Send,{Click Right}
  
-CapsLock & p::SendInput,{Shift}
+CapsLock & u::SendInput,{Shift}
+CapsLock & r::SendInput,{Shift}
 ; 自动完成括号等开始
 CapsLock & i::SendInput,(){Left}
 CapsLock & <::SendInput,`<`>{Left}
