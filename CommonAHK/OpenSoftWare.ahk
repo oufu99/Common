@@ -16,3 +16,4 @@ Return
 F1::
  Run,D:\MyLove\TotalCommand\Totalcmd64.exe
 Return
+; ´ò¿ªTC½áÊø ========
