@@ -1050,11 +1050,12 @@ CapsLock & `;::SendInput,{End};
 
 ; ctrl+单击跳转到定义 
 ^RButton::
-  Send,{Click}{Ctrl Down}{F12}{Ctrl Up}
+  Send,{Click}{F12}
 Return
 
-^LButton::
-  Send,{Click}{F12}
+MButton::
+  Send,{Click}{Ctrl Down}{F12}{Ctrl Up}
+
 Return
 
 ::jp::
