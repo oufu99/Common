@@ -11,9 +11,3 @@ Return
 ^Numpad1::
    Run, C:\Program Files (x86)\WizNote\Wiz.exe
 Return
-
-
-F1::
- Run,D:\MyLove\TotalCommand\Totalcmd64.exe
-Return
-; ´ò¿ªTC½áÊø ========
