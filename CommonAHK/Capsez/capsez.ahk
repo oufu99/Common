@@ -1005,7 +1005,6 @@ CapsLock & <::SendInput,`<`>{Left}
 CapsLock & [::Send, {{}{}}{Left}
 CapsLock & '::SendInput,""{Left}
 CapsLock & (::Send, (){Left}
-CapsLock & x::SendInput,`<`>{Left}
 CapsLock & w::SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
 ; 自动完成括号等结束
 
