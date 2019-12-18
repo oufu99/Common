@@ -997,7 +997,6 @@ CapsLock & Backspace::SendInput,{Backspace}
 
 ^y::Send,{Click Right}
  
-CapsLock & u::SendInput,{Shift}
 CapsLock & r::SendInput,{Shift}
 ; 自动完成括号等开始
 CapsLock & i::SendInput,(){Left}
@@ -1050,13 +1049,9 @@ CapsLock & `;::SendInput,{End};
 
 ; ctrl+单击跳转到定义 
 ^RButton::
-  Send,{Click}{F12}
-Return
-
-MButton::
   Send,{Click}{Ctrl Down}{F12}{Ctrl Up}
-
 Return
+
 
 ::jp::
 SendInput {Text} JSON.parse();
