@@ -1,5 +1,9 @@
 #singleinstance force
 
+
+;  CapsLock & d   用于复制   自定义开始
+
+
 ;CapsLock增强脚本，例子
 ;by Ez
 
@@ -996,7 +1000,7 @@ CapsLock & Backspace::SendInput,{Backspace}
 `; & e::SendInput,{End}
 
 ^y::Send,{Click Right}
- 
+CapsLock & y::SendInput,y
 CapsLock & r::SendInput,{Shift}
 ; 自动完成括号等开始
 CapsLock & i::SendInput,(){Left}
@@ -1107,8 +1111,6 @@ Return
 `; & m:: SendInput,{Blind}{PgUp}
 
 `; & Space:: SendInput,{Delete}
-`; & s:: SendInput,{End}{Shift Down}{Home}{Shift Up}
-
 
 
 ;粘贴然后回车，多用在搜索框等输入的位置
