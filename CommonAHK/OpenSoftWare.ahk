@@ -11,3 +11,6 @@ Return
 ^Numpad1::
    Run, C:\Program Files (x86)\WizNote\Wiz.exe
 Return
+
+; 注释掉F1,免得总是按错 F1也没啥用
+F1:: 
