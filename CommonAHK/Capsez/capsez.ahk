@@ -1003,7 +1003,6 @@ CapsLock & Backspace::SendInput,{Backspace}
 CapsLock & y::SendInput,y
 CapsLock & r::SendInput,{Shift}
 ; 自动完成括号等开始
-CapsLock & i::SendInput,(){Left}
 CapsLock & <::SendInput,`<`>{Left}
 ; 大括号很特殊 需要这么输出才行
 CapsLock & [::Send, {{}{}}{Left}
