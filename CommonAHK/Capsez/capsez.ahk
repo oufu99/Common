@@ -1,7 +1,7 @@
 #singleinstance force
 
 
-;  CapsLock & d   用于复制   自定义开始
+;  CapsLock & d   用于复制   
 
 
 ;CapsLock增强脚本，例子
