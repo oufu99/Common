@@ -915,8 +915,7 @@ CapsLock & l:: SendInput,{Blind}{Right}
 ;************** u,i单击双击^ **************
 ;CapsLock & b:: SendInput,{Blind}^{Home}
 ;CapsLock & e:: SendInput,{Blind}^{End}
-;CapsLock & n:: SendInput,{Blind}{PgDn}
-;CapsLock & m:: SendInput,{Blind}{PgUp}
+
 
 
 CapsLock & e::
@@ -982,7 +981,6 @@ CapsLock & Space:: send,{Backspace}
 
 
 ;************** 自定义开始 **************
-;  CapsLock & d   用于复制
 ; 调整了  直接在这文件中搜索 调用任务栏相关程序快捷键
 ; ;+空格 改成了BackSpace
 ; ;+z 去掉了 免得冲突Vs的按键
@@ -991,24 +989,41 @@ CapsLock & Space:: send,{Backspace}
 
 ;************** 代码开始 **************
 
-CapsLock & d::SendInput,{End}{Shift Down}{Home}{Shift Up}{Backspace}{Home}{Backspace}
+CapsLock & d::SendInput,{End}{Shift Down}{Home}{Shift Up}
+
 ; 通用的情况很有可能按错成l 只有在Vs中才能用到;
 CapsLock & `;::SendInput,{Right}
 CapsLock & Backspace::SendInput,{Backspace}
 `; & d::SendInput,{End}+{Home}{Backspace}
 `; & b::SendInput,{Home}
 `; & e::SendInput,{End}
+;CapsLock & n:: SendInput,{Blind}{Right}
+;CapsLock & m:: SendInput,{Blind}{Left}
+
+; caps加上面的数字会变成大写 所以全部重写
+CapsLock & 1::Send,`!
+CapsLock & 2::Send, `@
+CapsLock & 3::Send, `#
+CapsLock & 4::Send, `$
+CapsLock & 5::Send, `%
+CapsLock & 6::Send, `^
+CapsLock & 7::Send, `&
+CapsLock & 8::Send, `*
+CapsLock & 9::Send, (){Left}
+
+
+; 加数字变大写 重写结束
+
+
 
 ^y::Send,{Click Right}
-CapsLock & y::SendInput,y
+CapsLock & y::SendInput,Y
 CapsLock & r::SendInput,{Shift}
 ; 自动完成括号等开始
-CapsLock & i::SendInput,(){Left}
 CapsLock & <::SendInput,`<`>{Left}
 ; 大括号很特殊 需要这么输出才行
 CapsLock & [::Send, {{}{}}{Left}
 CapsLock & '::SendInput,""{Left}
-CapsLock & (::Send, (){Left}
 CapsLock & w::SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
 ; 自动完成括号等结束
 
