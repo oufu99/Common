@@ -896,14 +896,7 @@ return
 
 
 ;************** CapsLock相关 ************** {{{2
-;win+caps+按键
-;Capslock & e::
-;state := GetKeyState("LWin", "T")  ; 当 CapsLock 打开时为真, 否则为假.
-;if state
-	;msgbox handle！
-;else
-	;send #e
-;return
+
 
 CapsLock & j:: SendInput,{Blind}{Down}
 CapsLock & k:: SendInput,{Blind}{Up}
@@ -913,10 +906,6 @@ CapsLock & l:: SendInput,{Blind}{Right}
 
 
 ;************** u,i单击双击^ **************
-;CapsLock & b:: SendInput,{Blind}^{Home}
-;CapsLock & e:: SendInput,{Blind}^{End}
-
-
 
 CapsLock & e::
 	GV_KeyClickAction1 := "SendInput,{End}"
@@ -1001,16 +990,16 @@ CapsLock & Backspace::SendInput,{Backspace}
 ;CapsLock & m:: SendInput,{Blind}{Left}
 
 ; caps加上面的数字会变成大写 所以全部重写
-CapsLock & 1::Send,`!
-CapsLock & 2::Send, `@
-CapsLock & 3::Send, `#
+CapsLock & 1::Send, {!}
+CapsLock & 2::Send, `@  
+CapsLock & 3::Send, {#}
 CapsLock & 4::Send, `$
 CapsLock & 5::Send, `%
-CapsLock & 6::Send, `^
-CapsLock & 7::Send, `&
-CapsLock & 8::Send, `*
+CapsLock & 6::Send, {^} 
+CapsLock & 7::Send, `& 
+CapsLock & 8::Send, `* 
 CapsLock & 9::Send, (){Left}
-
+CapsLock & )::Send, (){Left}
 
 ; 加数字变大写 重写结束
 
@@ -1019,6 +1008,9 @@ CapsLock & 9::Send, (){Left}
 ^y::Send,{Click Right}
 CapsLock & y::SendInput,Y
 CapsLock & r::SendInput,{Shift}
+CapsLock & f:: SendInput,{Blind}{Enter}
+
+
 ; 自动完成括号等开始
 CapsLock & <::SendInput,`<`>{Left}
 ; 大括号很特殊 需要这么输出才行
@@ -1030,10 +1022,13 @@ CapsLock & w::SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
 
 :*:jw::{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
 
-Tab & h:: SendInput,{Blind}{Left}
-Tab & j:: SendInput,{Blind}{Down}
-Tab & l:: SendInput,{Blind}{Right}
-Tab & k:: SendInput,{Blind}{Up}
+Tab & h:: SendInput,{Blind}{Shift Down}{Left}{Shift Up}
+Tab & j:: SendInput,{Blind}{Shift Down}{Down}{Shift Up}
+Tab & l:: SendInput,{Blind}{Shift Down}{Right}{Shift Up}
+Tab & k:: SendInput,{Blind}{Shift Down}{Up}{Shift Up}
+
+Tab & r:: SendInput,{Blind}{Shift Down}{Ctrl Down}{Left}{Shift Up}{Ctrl Up}
+
 
 `; & z::SendInput,{Ctrl Down}z{Ctrl Up}
 
@@ -1298,13 +1293,6 @@ Tab & 2:: send,#2
 Tab & 3:: send,#3
 Tab & 4:: send,#4
 Tab & 5:: send,#5
-
-;常用的三个按键
-Tab & r:: SendInput,{Blind}{Del}
-Tab & e:: SendInput,{Blind}{Enter}
-
-
-
 
 
 ;重要的alttab菜单
