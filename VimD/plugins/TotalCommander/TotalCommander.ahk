@@ -233,6 +233,7 @@
     vim.map("x", "<cm_Delete>", "TTOTAL_CMD")
     vim.map("X", "<TC_ForceDelete>", "TTOTAL_CMD")
     vim.map("w", "<cm_List>", "TTOTAL_CMD")
+	vim.map("W", "<cm_List>", "TTOTAL_CMD")
     vim.map("y", "<cm_CopyNamesToClip>", "TTOTAL_CMD")
     vim.map("Y", "<cm_CopyFullNamesToClip>", "TTOTAL_CMD")
     vim.map("P", "<cm_PackFiles>", "TTOTAL_CMD")

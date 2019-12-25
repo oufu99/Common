@@ -1004,8 +1004,12 @@ CapsLock & )::Send, (){Left}
 ; 加数字变大写 重写结束
 
 
+; 解决按了以后锁定大写的问题
+CapsLock & y::SendInput,y
+CapsLock & q::SendInput,q
+CapsLock & i::SendInput,i
+; 解决按了以后锁定大写的问题
 
-CapsLock & y::SendInput,Y
 CapsLock & r::SendInput,{Shift}
 CapsLock & f:: SendInput,{Blind}{Enter}
 

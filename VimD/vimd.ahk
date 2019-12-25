@@ -258,14 +258,7 @@ RunAsAdmin()
 #Include %A_ScriptDir%\core\class_vim.ahk
 #Include %A_ScriptDir%\core\VimDConfig.ahk
 #Include %A_ScriptDir%\lib\class_EasyINI.ahk
-; #Include %A_ScriptDir%\lib\acc.ahk
-; #Include %A_ScriptDir%\lib\acc.ahk
 #Include %A_ScriptDir%\lib\ini.ahk
-; #Include %A_ScriptDir%\lib\gdip.ahk
-; #Include %A_ScriptDir%\lib\Logger.ahk
-; #Include %A_ScriptDir%\lib\AdjustBrightness.ahk
-; #Include %A_ScriptDir%\lib\隐藏&显示鼠标.ahk
-; #Include %A_ScriptDir%\lib\Taskbar.ahk
 #Include %A_ScriptDir%\plugins\plugins.ahk
 
 
