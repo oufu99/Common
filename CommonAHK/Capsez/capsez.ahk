@@ -1005,7 +1005,6 @@ CapsLock & )::Send, (){Left}
 
 
 
-^y::Send,{Click Right}
 CapsLock & y::SendInput,Y
 CapsLock & r::SendInput,{Shift}
 CapsLock & f:: SendInput,{Blind}{Enter}
