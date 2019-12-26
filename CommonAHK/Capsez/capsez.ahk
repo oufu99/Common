@@ -1004,7 +1004,7 @@ CapsLock & )::Send, (){Left}
 
 
 ; 解决按了以后锁定大写的问题
-CapsLock & y::SendInput,y
+CapsLock & y::SendInput,{RButton}
 CapsLock & q::SendInput,q
 CapsLock & i::SendInput,i
 ; 解决按了以后锁定大写的问题
