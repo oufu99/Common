@@ -982,7 +982,7 @@ CapsLock & d::SendInput,{End}{Shift Down}{Home}{Shift Up}
 ; 通用的情况很有可能按错成l 只有在Vs中才能用到;
 CapsLock & `;::SendInput,{Right}
 CapsLock & Backspace::SendInput,{Backspace}
-`; & d::SendInput,{End}+{Home}{Backspace}
+`; & d::SendInput,{End}+{Home}{Backspace}{Backspace}
 `; & b::SendInput,{Home}
 `; & e::SendInput,{End}
 ;CapsLock & n:: SendInput,{Blind}{Right}
