@@ -976,18 +976,17 @@ CapsLock & Space:: send,{Backspace}
 
 
 ;************** 代码开始 **************
-
-CapsLock & d::SendInput,{End}{Shift Down}{Home}{Shift Up}
+!a::SendInput,{End}{Shift Down}{Home}{Shift Up}
+CapsLock & d::SendInput,SendInput,{End}{Shift Down}{Home}{Shift Up}{Delete}{Backspace}
 
 ; 通用的情况很有可能按错成l 只有在Vs中才能用到;
 CapsLock & `;::SendInput,{Right}
 CapsLock & Backspace::SendInput,{Backspace}
-`; & d::SendInput,{End}+{Home}{Backspace}{Backspace}
+`; & d::SendInput,SendInput,SendInput,{End}{Shift Down}{Home}{Shift Up}{Delete}{Backspace}
 `; & b::SendInput,{Home}
 `; & e::SendInput,{End}
 ;CapsLock & n:: SendInput,{Blind}{Right}
 ;CapsLock & m:: SendInput,{Blind}{Left}
-
 ; caps加上面的数字会变成大写 所以全部重写
 CapsLock & 1::Send, {!}
 CapsLock & 2::Send, `@  
