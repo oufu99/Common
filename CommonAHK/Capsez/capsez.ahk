@@ -983,6 +983,7 @@ DeleteOneLine()
 	   whileText=%clipboard%
  	}
  SendInput,{Backspace}
+ Return
 }
 
 
