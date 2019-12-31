@@ -969,22 +969,10 @@ CapsLock & Enter:: GoSub,Sub_MaxRestore
 ; 删除一行
 DeleteOneLine()
 {
- SendInput,{End}{Shift Down}{Home}{Shift Up}
- tempText=%clipboard%
- SendInput,^c
- whileText=%clipboard%
-	; 判断剪切板是否为空
-    while(whileText!="")
- 	{
- 	   ; 如果为空就全部复制
-       SendInput,{End}{Shift Down}{Home}{Shift Up}{Backspace}
-	   SendInput,{End}{Shift Down}{Home}{Shift Up}
-       SendInput,^c
-	   whileText=%clipboard%
- 	}
- SendInput,{Backspace}
- Return
+  SendInput,{Home 2}+{End}{Backspace 2}
+  Return
 }
+
 
 
 ;************** 自定义方法结束 **************
@@ -999,13 +987,13 @@ DeleteOneLine()
 
 ;************** 代码开始 **************
 !a::SendInput,{End}{Shift Down}{Home}{Shift Up}
-CapsLock & d::SendInput,{End}{Shift Down}{Home}{Shift Up}{Delete}{Backspace}
+CapsLock & d::DeleteOneLine()
 CapsLock & Space:: send,{Backspace}
 
 ; 通用的情况很有可能按错成l 只有在Vs中才能用到;
 CapsLock & `;::SendInput,{Right}
 CapsLock & Backspace::SendInput,{Backspace}
-`; & d::SendInput,{End}{Shift Down}{Home}{Shift Up}{Delete}{Backspace}
+`; & d::DeleteOneLine()
 `; & b::SendInput,{Home}
 `; & e::SendInput,{End}
 ;CapsLock & n:: SendInput,{Blind}{Right}
