@@ -1051,6 +1051,7 @@ Tab & r:: SendInput,{Blind}{Shift Down}{Ctrl Down}{Left}{Shift Up}{Ctrl Up}
 	clipboard = 
 	SendInput,^c
 	; 判断剪切板是否为空
+	ClipWait ,0.2
     if(clipboard="")
  	{
  	   ; 如果为空就全部复制
