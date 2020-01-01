@@ -7,7 +7,6 @@
 ;CapsLock增强脚本，例子
 ;by Ez
 
-; 我的指导思想 Caps操作移动 删除  ;操作打开文件 Tab操作选中
 
 ;管理员权限代码，放在文件开头 {{{1
 Loop, %0%
@@ -1005,7 +1004,7 @@ CapsLock & )::Send, (){Left}
 
 
 ; 解决按了以后锁定大写的问题
-CapsLock & y::SendInput,y
+CapsLock & y::SendInput,{RButton}
 CapsLock & q::SendInput,q
 CapsLock & i::SendInput,i
 ; 解决按了以后锁定大写的问题
