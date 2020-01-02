@@ -973,7 +973,50 @@ DeleteOneLine()
   Return
 }
 
+CheckWordLeftOrRight()
+{
+   clipboard := ""
+   SendInput,+{Left}
+   SendInput,^c
+   ClipWait
+   ; 还原光标位置
+   SendInput,{Right}
+   if(clipboard=" " or clipboard="""")
+   {
+	  ; 左边是空格,所以是向右边过去
+	  return "you" 
+   }
+   else
+   {
+      return "zuo"
+   }
+}
 
+; 向左选中一个单词并取消掉最后的一个空格
+CheckLeftWord(){
+clipboard := ""
+SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
+; 把这些复制 判断最后一个
+SendInput,{Right}{Shift Down}{Left}{Shift Up}
+SendInput,^c
+ClipWait
+; 专门为了Vs改的,如果后面是空格就去掉
+if(clipboard=" ")
+{
+ SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}+{Left}
+}
+else
+{
+  SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
+}
+
+return
+}
+
+CheckRightWord(){
+	SendInput,{Right}
+	CheckLeftWord()
+}
 
 ;************** 自定义方法结束 **************
 
@@ -1028,11 +1071,21 @@ CapsLock & <::SendInput,`<`>{Left}
 ; 大括号很特殊 需要这么输出才行
 CapsLock & [::Send, {{}{}}{Left}
 CapsLock & '::SendInput,""{Left}
-CapsLock & w::SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
+CapsLock & w::
+tempA:=clipboard
+isLeft:=CheckWordLeftOrRight()
+if(isLeft="zuo")
+{
+  CheckLeftWord()
+}
+else
+{
+  CheckRightWord()
+}
+clipboard:=tempA
+return
+
 ; 自动完成括号等结束
-
-
-:*:jw::{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
 
 Tab & h:: SendInput,{Blind}{Shift Down}{Left}{Shift Up}
 Tab & j:: SendInput,{Blind}{Shift Down}{Down}{Shift Up}
