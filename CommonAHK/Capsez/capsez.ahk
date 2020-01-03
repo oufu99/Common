@@ -978,7 +978,11 @@ CheckWordLeftOrRight()
    clipboard := ""
    SendInput,+{Left}
    SendInput,^c
+<<<<<<< HEAD
    ClipWait
+=======
+   ClipWait,0.2
+>>>>>>> ee0c9d5602a59855ba11825f792a99e53555e159
    ; 还原光标位置
    SendInput,{Right}
    if(clipboard=" " or clipboard="""")
@@ -991,6 +995,7 @@ CheckWordLeftOrRight()
       return "zuo"
    }
 }
+<<<<<<< HEAD
 
 ; 向左选中一个单词并取消掉最后的一个空格
 CheckLeftWord(){
@@ -1020,7 +1025,34 @@ CheckRightWord(){
 
 
 
+=======
+>>>>>>> ee0c9d5602a59855ba11825f792a99e53555e159
 
+; 向左选中一个单词并取消掉最后的一个空格
+CheckLeftWord(){
+clipboard := ""
+SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
+; 把这些复制 判断最后一个
+SendInput,{Right}{Shift Down}{Left}{Shift Up}
+SendInput,^c
+ClipWait,0.2
+; 专门为了Vs改的,如果后面是空格就去掉
+if(clipboard=" ")
+{
+ SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}+{Left}
+}
+else
+{
+  SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
+}
+
+return
+}
+
+CheckRightWord(){
+	SendInput,{Right}
+	CheckLeftWord()
+}
 
 ;************** 自定义方法结束 **************
 
@@ -1040,9 +1072,6 @@ CapsLock & Space:: send,{Backspace}
 ; 通用的情况很有可能按错成l 只有在Vs中才能用到;
 CapsLock & `;::SendInput,{Right}
 CapsLock & Backspace::SendInput,{Backspace}
-`; & d::DeleteOneLine()
-`; & b::SendInput,{Home}
-`; & e::SendInput,{End}
 ;CapsLock & n:: SendInput,{Blind}{Right}
 ;CapsLock & m:: SendInput,{Blind}{Left}
 ; caps加上面的数字会变成大写 所以全部重写
@@ -1088,6 +1117,10 @@ else
 }
 clipboard:=tempA
 return
+<<<<<<< HEAD
+=======
+
+>>>>>>> ee0c9d5602a59855ba11825f792a99e53555e159
 ; 自动完成括号等结束
 
 Tab & h:: SendInput,{Blind}{Shift Down}{Left}{Shift Up}
@@ -1097,17 +1130,27 @@ Tab & k:: SendInput,{Blind}{Shift Down}{Up}{Shift Up}
 
 Tab & r:: SendInput,{Blind}{Shift Down}{Ctrl Down}{Left}{Shift Up}{Ctrl Up}
 
+; ;用来选中
 
-`; & z::SendInput,{Ctrl Down}z{Ctrl Up}
+`; & b::SendInput,{Home}
+`; & e::SendInput,{End}
 
-;复制粘贴相关开始
+; 开始 ;开始
 
-`; & a::SendInput,{Home}+{End}
+`; & j:: SendInput,+{Down}
+`; & k:: SendInput,+{Up}
+`; & h:: SendInput,+{Left}
+`; & l:: SendInput,+{Right}
+`; & n:: SendInput,+{PgDn}
+`; & m:: SendInput,+{PgUp}
+
+`; & Space:: SendInput,{Delete}
+`; & d::SendInput,{Home 2}+{End}
 `; & c::
 	clipboard = 
 	SendInput,^c
 	; 判断剪切板是否为空
-	ClipWait ,0.2
+	ClipWait,0.2
     if(clipboard="")
  	{
  	   ; 如果为空就全部复制
@@ -1116,11 +1159,21 @@ Tab & r:: SendInput,{Blind}{Shift Down}{Ctrl Down}{Left}{Shift Up}{Ctrl Up}
 	   SendInput,{End}
  	}
 return
-
-
-`; & v::
-	SendInput,^v
+`; & x::
+	clipboard = 
+	SendInput,^x
+	; 判断剪切板是否为空
+	ClipWait,0.2
+    if(clipboard="")
+ 	{
+ 	   ; 如果为空就全部复制
+       SendInput,{End}{Shift Down}{Home}{Shift Up}
+	   SendInput,^x
+	   SendInput,{End}
+ 	}
 return
+`; & z::SendInput,{Ctrl Down}z{Ctrl Up}
+`; & v::SendInput,^v
 ;复制粘贴相关结束
 
 
@@ -1188,16 +1241,6 @@ Return
 
 
 ;************** 分号;相关 ************** {{{2
-
-
-`; & j:: SendInput,{Blind}{Down}
-`; & k:: SendInput,{Blind}{Up}
-`; & h:: SendInput,{Blind}{Left}
-`; & l:: SendInput,{Blind}{Right}
-`; & n:: SendInput,{Blind}{PgDn}
-`; & m:: SendInput,{Blind}{PgUp}
-
-`; & Space:: SendInput,{Delete}
 
 
 ;粘贴然后回车，多用在搜索框等输入的位置
