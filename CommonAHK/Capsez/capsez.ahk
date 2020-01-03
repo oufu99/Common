@@ -1120,6 +1120,19 @@ Tab & r:: SendInput,{Blind}{Shift Down}{Ctrl Down}{Left}{Shift Up}{Ctrl Up}
 	   SendInput,{End}
  	}
 return
+`; & x::
+	clipboard = 
+	SendInput,^x
+	; 判断剪切板是否为空
+	ClipWait,0.2
+    if(clipboard="")
+ 	{
+ 	   ; 如果为空就全部复制
+       SendInput,{End}{Shift Down}{Home}{Shift Up}
+	   SendInput,^x
+	   SendInput,{End}
+ 	}
+return
 `; & z::SendInput,{Ctrl Down}z{Ctrl Up}
 `; & v::SendInput,^v
 ;复制粘贴相关结束
