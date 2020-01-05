@@ -978,11 +978,7 @@ CheckWordLeftOrRight()
    clipboard := ""
    SendInput,+{Left}
    SendInput,^c
-<<<<<<< HEAD
-   ClipWait
-=======
    ClipWait,0.2
->>>>>>> ee0c9d5602a59855ba11825f792a99e53555e159
    ; 还原光标位置
    SendInput,{Right}
    if(clipboard=" " or clipboard="""")
@@ -995,38 +991,7 @@ CheckWordLeftOrRight()
       return "zuo"
    }
 }
-<<<<<<< HEAD
-
-; 向左选中一个单词并取消掉最后的一个空格
-CheckLeftWord(){
-clipboard := ""
-SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
-; 把这些复制 判断最后一个
-SendInput,{Right}{Shift Down}{Left}{Shift Up}
-SendInput,^c
-ClipWait
-; 专门为了Vs改的,如果后面是空格就去掉
-if(clipboard=" ")
-{
- SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}+{Left}
-}
-else
-{
-  SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
-}
-
-return
-}
-
-CheckRightWord(){
-	SendInput,{Right}
-	CheckLeftWord()
-}
-
-
-
-=======
->>>>>>> ee0c9d5602a59855ba11825f792a99e53555e159
+ 
 
 ; 向左选中一个单词并取消掉最后的一个空格
 CheckLeftWord(){
@@ -1117,10 +1082,7 @@ else
 }
 clipboard:=tempA
 return
-<<<<<<< HEAD
-=======
 
->>>>>>> ee0c9d5602a59855ba11825f792a99e53555e159
 ; 自动完成括号等结束
 
 Tab & h:: SendInput,{Blind}{Shift Down}{Left}{Shift Up}
