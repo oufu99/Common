@@ -1106,6 +1106,7 @@ Tab & r:: SendInput,{Blind}{Shift Down}{Ctrl Down}{Left}{Shift Up}{Ctrl Up}
 `; & n:: SendInput,+{PgDn}
 `; & m:: SendInput,+{PgUp}
 
+
 `; & Space:: SendInput,{Delete}
 `; & d::SendInput,{Home 2}+{End}
 `; & c::
