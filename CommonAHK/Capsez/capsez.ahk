@@ -1108,7 +1108,8 @@ Tab & r:: SendInput,{Blind}{Shift Down}{Ctrl Down}{Left}{Shift Up}{Ctrl Up}
 
 
 `; & Space:: SendInput,{Delete}
-`; & d::SendInput,{Home 2}+{End}
+`; & d::DeleteOneLine()
+; ; & d::SendInput,{Home 2}+{End}
 `; & c::
 	clipboard = 
 	SendInput,^c
