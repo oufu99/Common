@@ -1,1 +1,13 @@
 鼠标点击:
+Click
+
+剪切板复制:
+tempClip:=clipboard
+clipboard :="test123"
+
+
+操作文本文件
+
+file := FileOpen("D:\test123.txt",3,"UTF-8-RAW")
+file.write(ruleText)
+file.Close()
