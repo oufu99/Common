@@ -1,4 +1,4 @@
-
+﻿
 ^+q::
 InputBox, ChoiceText, 请选择您想要的操作, 1.备份AdBlock 2.还原AdBlock
 if ChoiceText=1
@@ -36,6 +36,7 @@ ResetAdBlock()
  Sleep,100
  clipboard:=OutputVar
  ClipWait,0.2
+ msgBox,%clipboard%
  SendInput,^v
  Sleep,200
  Click,%screePoint%
@@ -90,7 +91,7 @@ IfWinExist, TTOTAL_CMD
 	   WinActivate
 return
 
-^+c::
+^!c::
        ; 判断是否在TC中运行
 
 	   selected := ExplorerInfo(3)
