@@ -29,18 +29,17 @@ ResetAdBlock()
  ClipWait,0.2
  SendInput,^v
  Send,{Enter}
- Sleep,300
+ Sleep,800
  Click,%screePoint%
- Sleep,500
+ Sleep,300
  Send,^a{Delete}
  Sleep,100
  clipboard:=OutputVar
  ClipWait,0.2
- msgBox,%clipboard%
  SendInput,^v
  Sleep,200
  Click,%screePoint%
- Sleep,200
+ Sleep,500
  SendInput,^w
 }
  
@@ -60,13 +59,14 @@ BankAdBlock(){
 	 clipboard:=adblockPath
 	 SendInput,^v
 	 Send,{Enter}
+	 Sleep,800
+	 Click,%screePoint%
 	 Sleep,300
-	 Click,1356,547
-	 Sleep,100
 	 Send,^a
 	 Sleep,100
 	 Send,^c
-	 ClipWait,0.2
+	 ClipWait,0.5
+	
 	 ruleText:=clipboard
 	 file := FileOpen(targetTextPath,3,"UTF-8-RAW")
 	 file.write(ruleText)
