@@ -1143,7 +1143,7 @@ return
 ; Vs中生效开始  Vs开始
 #IfWinActive, ahk_exe devenv.exe
 
-`; & f::SendInput public{Space}{Space}void{Space}{Space}Func(){Enter}{{}{Enter}{Enter}{}}{Up}
+; `; & f::SendInput public{Space}{Space}void{Space}{Space}Func(){Enter}{{}{Enter}{Enter}{}}{Up}
 
 `; & z::SendInput, {Ctrl Down}{Shift Down}{Alt Down}{F12}{Ctrl Up}{Shift Up}{Alt Up}
 `; & t::SendInput, {Ctrl Down}[s{Ctrl Up}
