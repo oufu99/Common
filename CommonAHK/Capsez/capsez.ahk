@@ -1143,7 +1143,6 @@ $^c::
 		{
 			ClipWait, 0.3
 		}
-		msgBox,okk
 		Sleep 200
 		content := Clipboard
 		; 匹配正则开始
