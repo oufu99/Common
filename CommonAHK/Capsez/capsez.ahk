@@ -1119,18 +1119,42 @@ Tab & r:: SendInput,{Blind}{Shift Down}{Ctrl Down}{Left}{Shift Up}{Ctrl Up}
 `; & d::DeleteOneLine()
 ; ; & d::SendInput,{Home 2}+{End}
 Tab & d::SendInput,{Home 2}+{End}
-`; & c::
-	clipboard = 
+ 
+; 增强剪切板 如果没选中任何东西就复制一整行 去掉浏览器的小尾巴
+$^c::
+    clipboard = 
 	SendInput,^c
 	; 判断剪切板是否为空
 	ClipWait,0.2
-    if(clipboard="")
+    if(clipboard="" && IfWinNotActive,ahk_exe chrome.exe)
  	{
- 	   ; 如果为空就全部复制
-       SendInput,{End}{Shift Down}{Home}{Shift Up}
-	   SendInput,^c
-	   SendInput,{End}
+	  
+	  
+ 	    ; 如果为空就全部复制
+        SendInput,{End}{Shift Down}{Home}{Shift Up}
+	    SendInput,^c
+	    SendInput,{End}
+	  
  	}
+	; 浏览器单独处理
+    IfWinActive,ahk_exe chrome.exe
+	{
+		while(Clipboard = )
+		{
+			ClipWait, 0.3
+		}
+		msgBox,okk
+		Sleep 200
+		content := Clipboard
+		; 匹配正则开始
+		content := RegExReplace(content, "`as)————————————————(\r\n?|\n).*原文链接：https?://blog\.csdn\.net.*?$")
+		content := RegExReplace(content, "`as)作者：[^\r\n]*(\r\n?|\n)链接：https://www.zhihu.com.*?$")
+		
+		; 匹配正则结束
+		Clipboard := content
+		Return
+	}	
+ 
 return
 `; & x::
 	clipboard = 
