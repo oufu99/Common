@@ -3,6 +3,14 @@
 
 ;  CapsLock & d   用于复制   
 
+;************** 自定义其他的开始 **************
+
+; 注释掉F1,免得总是按错 F1也没啥用
+F1::
+
+
+;************** 自定义其他的结束 **************
+
 
 ;CapsLock增强脚本，例子
 ;by Ez
@@ -951,8 +959,7 @@ KeyCapsLockV:
 return
 ;***************** 剪贴板相关$ **************
 
-CapsLock & n:: send,{Blind}^+{Tab}
-CapsLock & m:: send,{Blind}^{Tab}
+
 
 
 CapsLock & .:: AltTab
@@ -1029,6 +1036,7 @@ CheckRightWord(){
 ; 删除了 CapsLock & n:: 把CapsLock & o p 改成了n m
 
 
+
 ;************** 代码开始 **************
 !a::SendInput,{End}{Shift Down}{Home}{Shift Up}
 CapsLock & d::DeleteOneLine()
@@ -1061,7 +1069,8 @@ CapsLock & i::SendInput,i
 
 CapsLock & r::SendInput,{Shift}
 CapsLock & f:: SendInput,{Blind}{Enter}
-
+CapsLock & n:: send,{Blind}^{Right}
+CapsLock & m:: send,{Blind}^{Left}
 
 ; 自动完成括号等开始
 CapsLock & <::SendInput,`<`>{Left}
@@ -1102,13 +1111,14 @@ Tab & r:: SendInput,{Blind}{Shift Down}{Ctrl Down}{Left}{Shift Up}{Ctrl Up}
 `; & k:: SendInput,+{Up}
 `; & h:: SendInput,+{Left}
 `; & l:: SendInput,+{Right}
-`; & n:: SendInput,+{PgDn}
-`; & m:: SendInput,+{PgUp}
+`; & n:: SendInput,^{Right}
+`; & m:: SendInput,^{Left}
 
 
 `; & Space:: SendInput,{Delete}
 `; & d::DeleteOneLine()
 ; ; & d::SendInput,{Home 2}+{End}
+Tab & d::SendInput,{Home 2}+{End}
 `; & c::
 	clipboard = 
 	SendInput,^c
@@ -1361,14 +1371,6 @@ Space::send,{Alt Up}
 
 ;************** tab相关 ************** {{{2
 ;基本操作上下左右，还可以扩展，主要用在左键右鼠的操作方式
-Tab & s:: SendInput,{Blind}{Down}
-Tab & w:: SendInput,{Blind}{Up}
-Tab & a:: SendInput,{Blind}{Left}
-Tab & d:: SendInput,{Blind}{Right}
-Tab & q:: SendInput,{Blind}{PgUp}
-Tab & f:: SendInput,{Blind}{PgDn}
-
-
 
 ;对应任务栏上固定的前5个程序快速切换
 Tab & 1:: send,#1
