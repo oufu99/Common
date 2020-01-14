@@ -1037,6 +1037,7 @@ CheckRightWord(){
 
 ; 我的其他Ahk代码
 
+; ctrl+空格 自动打开listary搜索百度
 ^Space::
 Send,^j
 sleep,100
