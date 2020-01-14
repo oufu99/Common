@@ -1035,10 +1035,21 @@ CheckRightWord(){
 ; ;+z 去掉了 免得冲突Vs的按键
 ; 删除了 CapsLock & n:: 把CapsLock & o p 改成了n m
 
+; 我的其他Ahk代码
+
+^Space::
+Send,^j
+sleep,100
+Send,{Space 2}
+return
+ 
+; 我的其他Ahk代码
+
 
 
 ;************** 代码开始 **************
 !a::SendInput,{End}{Shift Down}{Home}{Shift Up}
+^y::Click,right
 CapsLock & d::DeleteOneLine()
 CapsLock & Space:: send,{Backspace}
 
@@ -1189,10 +1200,6 @@ CapsLock & `;::SendInput,{End};
 Return
 
 
-::jp::
-SendInput {Text} JSON.parse();
-Send,{Left 2}
-Return
 #IfWinActive
 ; Vs中生效 结束
 
@@ -1537,10 +1544,7 @@ w:: SendInput,^w
 
 #IfWinActive
 
-#IfWinActive, ahk_group group_disableCtrlSpace
-	^Space::Controlsend,,^{Space}
-	+Space::Controlsend,,+{Space}
-#IfWinActive
+ 
 
 
 
