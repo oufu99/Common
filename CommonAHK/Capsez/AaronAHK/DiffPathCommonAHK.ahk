@@ -14,9 +14,9 @@ return
 
 ResetAdBlock()
 {
+ 
  tempClip:=clipboard
  FileRead,OutputVar,*P65001 %targetTextPath%
-
  Run,%chromePath%
  Sleep,500
  ; 模拟点击坐标

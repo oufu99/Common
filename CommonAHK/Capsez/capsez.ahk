@@ -1138,15 +1138,12 @@ $^c::
 	SendInput,^c
 	; 判断剪切板是否为空
 	ClipWait,0.2
-    if(clipboard="" && IfWinNotActive,ahk_exe chrome.exe)
+    if(clipboard="" and !(WinActive("ahk_exe chrome.exe")))
  	{
-	  
-	  
  	    ; 如果为空就全部复制
         SendInput,{End}{Shift Down}{Home}{Shift Up}
 	    SendInput,^c
 	    SendInput,{End}
-	  
  	}
 	; 浏览器单独处理
     IfWinActive,ahk_exe chrome.exe
@@ -1165,14 +1162,14 @@ $^c::
 		Clipboard := content
 		Return
 	}	
- 
 return
-`; & x::
+
+$^x::
 	clipboard = 
 	SendInput,^x
 	; 判断剪切板是否为空
 	ClipWait,0.2
-    if(clipboard="")
+    if(clipboard="" and !(WinActive("ahk_exe chrome.exe")))
  	{
  	   ; 如果为空就全部复制
        SendInput,{End}{Shift Down}{Home}{Shift Up}
@@ -1180,6 +1177,7 @@ return
 	   SendInput,{End}
  	}
 return
+
 `; & z::SendInput,{Ctrl Down}z{Ctrl Up}
 `; & v::SendInput,^v
 ;复制粘贴相关结束
