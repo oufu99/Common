@@ -16,6 +16,8 @@ F1::
 ;by Ez
 
 
+$~#Esc::Run,D:\MyLove\AHK\MyLove.ahk
+
 ;管理员权限代码，放在文件开头 {{{1
 Loop, %0%
   {
@@ -905,65 +907,8 @@ return
 ;************** CapsLock相关 ************** {{{2
 
 
-CapsLock & j:: SendInput,{Blind}{Down}
-CapsLock & k:: SendInput,{Blind}{Up}
-CapsLock & h:: SendInput,{Blind}{Left}
-CapsLock & l:: SendInput,{Blind}{Right}
 
-
-
-;************** u,i单击双击^ **************
-
-CapsLock & e::
-	GV_KeyClickAction1 := "SendInput,{End}"
-	GV_KeyClickAction2 := "SendInput,^{End}"
-	GoSub,Sub_KeyClick123
-return
-
-CapsLock & b::
-	GV_KeyClickAction1 := "SendInput,{Home}"
-	GV_KeyClickAction2 := "SendInput,^{Home}"
-	GoSub,Sub_KeyClick123
-return
-
- 
-
-;************** u,i单击双击$ **************
-
-;***************** 剪贴板相关^ **************
-CapsLock & v::
-	if CapsLockV_presses > 0
-	{
-		CapsLockV_presses += 1
-		return
-	}
-	CapsLockV_presses = 1
-	SetTimer, KeyCapsLockV, 175
-return
-
-KeyCapsLockV:
-	SetTimer, KeyCapsLockV, off
-	if CapsLockV_presses = 1
-	{
-		GoSub,PastePureText
-	}
-	else if CapsLockV_presses = 2
-	{
-			;msgbox 285
-		;Menu, MyMenu, Show
-		;EzOtherMenuShow()
-		;GoSub,EzOtherMenuShow
-		;EzOtherMenuShow()
-	}
-	CapsLockV_presses = 0
-return
-;***************** 剪贴板相关$ **************
-
-
-
-
-CapsLock & .:: AltTab
-CapsLock & ,:: ShiftAltTab
+	
 
 
 
@@ -1017,7 +962,6 @@ else
 {
   SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
 }
-
 return
 }
 
@@ -1053,7 +997,13 @@ return
 ^y::Click,right
 CapsLock & d::DeleteOneLine()
 CapsLock & Space:: send,{Backspace}
+CapsLock & j:: SendInput,{Blind}{Down}
+CapsLock & k:: SendInput,{Blind}{Up}
+CapsLock & h:: SendInput,{Blind}{Left}
+CapsLock & l:: SendInput,{Blind}{Right}
 
+CapsLock & e::SendInput,{End}
+CapsLock & b::SendInput,{Home}
 ; 通用的情况很有可能按错成l 只有在Vs中才能用到;
 CapsLock & `;::SendInput,{Right}
 CapsLock & Backspace::SendInput,{Backspace}
@@ -1075,12 +1025,13 @@ CapsLock & )::Send, (){Left}
 
 
 ; 解决按了以后锁定大写的问题
+
 CapsLock & q::SendInput,q
-CapsLock & i::SendInput,i
+CapsLock & u::SendInput,u
 ; 解决按了以后锁定大写的问题
 
 CapsLock & r::SendInput,{Shift}
-CapsLock & f:: SendInput,{Blind}{Enter}
+CapsLock & f:: SendInput,=
 CapsLock & n:: send,{Blind}^{Right}
 CapsLock & m:: send,{Blind}^{Left}
 
@@ -1111,7 +1062,7 @@ Tab & l:: SendInput,{Blind}{Shift Down}{Right}{Shift Up}
 Tab & k:: SendInput,{Blind}{Shift Down}{Up}{Shift Up}
 
 Tab & r:: SendInput,{Blind}{Shift Down}{Ctrl Down}{Left}{Shift Up}{Ctrl Up}
-
+Tab & Space:: send,{Backspace}
 ; ;用来选中
 
 `; & b::SendInput,{Home}
@@ -1186,8 +1137,6 @@ return
 ; Vs中生效开始  Vs开始
 #IfWinActive, ahk_exe devenv.exe
 
-; `; & f::SendInput public{Space}{Space}void{Space}{Space}Func(){Enter}{{}{Enter}{Enter}{}}{Up}
-
 `; & z::SendInput, {Ctrl Down}{Shift Down}{Alt Down}{F12}{Ctrl Up}{Shift Up}{Alt Up}
 `; & t::SendInput, {Ctrl Down}[s{Ctrl Up}
 
@@ -1197,6 +1146,14 @@ CapsLock & `;::SendInput,{End};
 ^RButton::
   Send,{Click}{Ctrl Down}{F12}{Ctrl Up}
 Return
+
+CapsLock & i::
+KeyWait,k, D T0.5
+if ErrorLevel    
+    return
+else
+    Send,{Down}(){Left}
+return 
 
 
 #IfWinActive
