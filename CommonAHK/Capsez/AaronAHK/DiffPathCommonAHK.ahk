@@ -18,7 +18,7 @@ ResetAdBlock()
  tempClip:=clipboard
  FileRead,OutputVar,*P65001 %targetTextPath%
  Run,%chromePath%
- Sleep,500
+ Sleep,1000
  ; 模拟点击坐标
  Send,#{Up}
  Sleep,300
@@ -49,7 +49,7 @@ BankAdBlock(){
      ; 保存剪切板的值
 	 tempClip:=clipboard
 	 Run,%chromePath%
-	 Sleep,500
+	 Sleep,1000
 	 
 	 ; 打开地址
 	 Send,#{Up}
