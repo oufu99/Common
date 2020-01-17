@@ -75,7 +75,7 @@ BankAdBlock(){
 	 clipboard:=tempClip
 	 Send,^w
 }
-
+; 打开记事本  打开Notepad++
 CapsLock & t::
 	IfWinExist, Notepad++
 		WinActivate ; 使用前面找到的窗口
