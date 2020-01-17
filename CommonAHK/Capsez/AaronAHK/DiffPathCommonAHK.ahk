@@ -64,12 +64,13 @@ BankAdBlock(){
 	 Click,%screePoint%
 	 Sleep,300
 	 Send,^a
-	 Sleep,100
+	 Sleep,200
 	 Send,^c
 	 ClipWait,0.5
 	
 	 ruleText:=clipboard
 	 file := FileOpen(targetTextPath,3,"UTF-8-RAW")
+	 Sleep,200
 	 file.write(ruleText)
 	 file.Close()
 	 clipboard:=tempClip

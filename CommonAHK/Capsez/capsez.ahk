@@ -15,8 +15,6 @@ F1::
 ;CapsLock增强脚本，例子
 ;by Ez
 
-; 重启我的代码
-$~#Esc::Run,D:\MyLove\AHK\MyLove.ahk
 
 ;管理员权限代码，放在文件开头 {{{1
 Loop, %0%
