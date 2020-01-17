@@ -15,7 +15,7 @@ F1::
 ;CapsLock增强脚本，例子
 ;by Ez
 
-
+; 重启我的代码
 $~#Esc::Run,D:\MyLove\AHK\MyLove.ahk
 
 ;管理员权限代码，放在文件开头 {{{1
@@ -1028,10 +1028,12 @@ CapsLock & )::Send, (){Left}
 
 CapsLock & q::SendInput,q
 CapsLock & u::SendInput,u
+CapsLock & i::SendInput,i
+CapsLock & g::SendInput,g
 ; 解决按了以后锁定大写的问题
 
 CapsLock & r::SendInput,{Shift}
-CapsLock & f:: SendInput,=
+CapsLock & f:: SendInput,{Enter}
 CapsLock & n:: send,{Blind}^{Right}
 CapsLock & m:: send,{Blind}^{Left}
 
@@ -1141,6 +1143,7 @@ return
 `; & t::SendInput, {Ctrl Down}[s{Ctrl Up}
 
 CapsLock & `;::SendInput,{End};
+CapsLock & g::SendInput,=
 
 ; ctrl+单击跳转到定义 
 ^RButton::
