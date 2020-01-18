@@ -77,13 +77,26 @@ BankAdBlock(){
 	 Send,^w
 }
 ; 打开记事本  打开Notepad++
-CapsLock & t::
-	IfWinExist, Notepad++
+CapsLock & ~t::
+Input,OutputVar, L1 T1
+if (OutputVar = "t")
+{
+   Send,{BackSpace}
+   IfWinExist, Notepad++
 		WinActivate ; 使用前面找到的窗口
 	else
+	{
 	   Run, %NotePadPath%
 	   WinActivate ; 
-	return
+	}
+}
+else
+{
+ Send,%OutputVar%
+}
+
+return 
+	
 	
 `; & Tab:: 
 IfWinExist, TTOTAL_CMD

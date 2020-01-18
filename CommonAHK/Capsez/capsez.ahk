@@ -1028,6 +1028,7 @@ CapsLock & q::SendInput,q
 CapsLock & u::SendInput,u
 CapsLock & i::SendInput,i
 CapsLock & g::SendInput,g
+CapsLock & y::SendInput,y
 ; 解决按了以后锁定大写的问题
 
 CapsLock & r::SendInput,{Shift}
@@ -1108,7 +1109,7 @@ $^c::
 		; 匹配正则开始
 		content := RegExReplace(content, "`as)————————————————(\r\n?|\n).*原文链接：https?://blog\.csdn\.net.*?$")
 		content := RegExReplace(content, "`as)作者：[^\r\n]*(\r\n?|\n)链接：https://www.zhihu.com.*?$")
-		
+		content := RegExReplace(content, "`as)作者：[^\r\n]*(\r\n?|\n)链接：https://www.imooc.com.*?$")
 		; 匹配正则结束
 		Clipboard := content
 		Return
@@ -1148,14 +1149,14 @@ CapsLock & g::SendInput,=
   Send,{Click}{Ctrl Down}{F12}{Ctrl Up}
 Return
 
-CapsLock & i::
-KeyWait,k, D T0.5
-if ErrorLevel    
-    return
-else
-    Send,{Down}(){Left}
+CapsLock & ~i::
+Input,OutputVar, L1 T1
+if (OutputVar = "i")
+   Send,{Down}{BackSpace}""{Left}
+if (OutputVar = "k")
+   Send,{Down}{BackSpace}(){Left}
 return 
-
+ 
 
 #IfWinActive
 ; Vs中生效 结束
