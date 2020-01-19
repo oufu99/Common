@@ -959,41 +959,19 @@ CheckLeftIsSpace()
 CheckIsSpace()
 {
    clipboard := ""
+   SendInput,{End}
    SendInput,+{Home}
    SendInput,^c
    ClipWait,0.2
    LeftFlag:="1"
    if(clipboard="")
    {
-	  LeftFlag:="1" 
-   }
-   else
-   {
-      LeftFlag:="0"
-	  SendInput,{Right}
-   }
-   clipboard := ""
-   SendInput,+{End}
-   SendInput,^c
-   ClipWait,0.2
-   RightFlag:="1"
-   if(clipboard="")
-   {
-	  RightFlag:="1" 
-   }
-   else
-   {
-      RightFlag:="0"
-      ; 还原光标位置
-      SendInput,{Left}
-   }
-   if(LeftFlag="1" and RightFlag="1")
-   {
      return "1"
    }
    else
    {
-     return "0"
+      SendInput,{Right}
+      return "0"
    }
 }
 CheckWordLeftOrRight()
