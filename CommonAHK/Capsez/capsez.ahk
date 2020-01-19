@@ -1,7 +1,35 @@
 #singleinstance force
 
 
+
+
 ;  CapsLock & d   用于复制   
+
+Hotkey,CapsLock & ~i,subWordi
+
+
+subWordi:
+Hotkey,CapsLock & k,off
+Input,outputvar,L1 T1
+Switch OutputVar 
+{
+case "i":
+{
+   Send,{BackSpace}""{Left}
+}
+case "k":
+{
+	Send,{BackSpace}(){Left}
+	Hotkey,CapsLock & k,on
+}
+Default:
+{
+  Hotkey,CapsLock & k,on
+  Send,%OutputVar%
+}
+}
+return
+
 
 ;************** 自定义其他的开始 **************
 
@@ -149,6 +177,8 @@ else{ ;有tc在运行
 		;msgbox 啥都不做
 	}
 }
+
+
 
 ;GV_ToolsPath := % GF_GetSysVar("ToolsPath")
 GV_TempPath := % GF_GetSysVar("TEMP")
@@ -921,40 +951,28 @@ DeleteOneLine()
 {
   temp:=clipboard
   check:=CheckIsSpace()
-  if(check="1")
+  ; msgBox,%check%
+  Switch check 
   {
-  
-     SendInput,{Home 2}+{End}{Backspace}
+    ; 1是行头 2是行内有数据 3是本行全是空格
+    case "1":
+    {
+    	SendInput,{Backspace}
+    }
+	case "2":
+    {
+        SendInput,{Home 2}+{End}{Backspace 2}
+    }
+	case "3":
+    {
+       ; 只有一行空格的时候特殊处理
+       SendInput,{Home}+{End}{Backspace 2}
+    }
   }
-  else
-  {
-    
-     SendInput,{Home 2}+{End}{Backspace 2}
-  }
-  
   clipboard:=temp
   Return
 }
 
-; 判断左边是否是空
-CheckLeftIsSpace()
-{
-   clipboard := ""
-   SendInput,+{Home}
-   SendInput,^c
-   ClipWait,0.2
-   ; 还原光标位置
-   
-   if(clipboard="""")
-   {
-	  return "1" 
-   }
-   else
-   {
-      SendInput,{Right}
-      return "0"
-   }
-}
 ; 判断两边是否是空
 CheckIsSpace()
 {
@@ -963,17 +981,34 @@ CheckIsSpace()
    SendInput,+{Home}
    SendInput,^c
    ClipWait,0.2
-   LeftFlag:="1"
-   if(clipboard="")
+   LenthA:=StrLen(clipboard)
+   ; msgBox,%clipboard%
+   ; msgBox,%LenthA%
+   clipboard := StrReplace(clipboard, A_Space, "")
+   clipboard := StrReplace(clipboard, " ", "")
+   LenthB:=StrLen(clipboard)
+   ; msgBox,%clipboard%
+   ; msgBox,%LenthB%
+   ; 让光标返回到最后面
+   SendInput,{End}
+   ; 这个要先验证 不然就返回2了  
+   ; a不等于b就说明a是有空格的,b是把空格全部替换掉,如果等于0了就代表这行
+   if(LenthA!=LenthB and LenthB=0)
+   {
+     ; 全是空格 全是空格需要特殊处理
+     return "3"
+   }
+   if(StrLen(clipboard)=0)
    {
      return "1"
    }
    else
    {
-      SendInput,{Right}
-      return "0"
+      return "2"
    }
 }
+
+ 
 CheckWordLeftOrRight()
 {
    clipboard := ""
@@ -1019,10 +1054,11 @@ CheckRightWord(){
 	CheckLeftWord()
 }
 
+
 ;************** 自定义方法结束 **************
 
 
-;************** 自定义开始 **************
+;========================================自定义开始========================================
 ; 调整了  直接在这文件中搜索 调用任务栏相关程序快捷键
 ; ;+空格 改成了BackSpace
 ; ;+z 去掉了 免得冲突Vs的按键
@@ -1079,7 +1115,7 @@ CapsLock & q::SendInput,q
 CapsLock & u::SendInput,u
 CapsLock & g::SendInput,g
 CapsLock & y::SendInput,y
-CapsLock & P::SendInput,p
+CapsLock & p::SendInput,p
 
 ; 解决按了以后锁定大写的问题
 
@@ -1111,6 +1147,13 @@ else
 }
 clipboard:=tempA
 return
+
+
+
+
+
+
+
 
 ; 自动完成括号等结束
 
@@ -1192,9 +1235,34 @@ return
 ;复制粘贴相关结束
 
  
+; Vs开始
+#IfWinActive, ahk_exe devenv.exe
 
 
-;************** 自定义结束 **************
+`; & z::SendInput, {Ctrl Down}{Shift Down}{Alt Down}{F12}{Ctrl Up}{Shift Up}{Alt Up}
+`; & t::SendInput, {Ctrl Down}[s{Ctrl Up}
+
+CapsLock & `;::SendInput,{End};
+CapsLock & g::SendInput,=
+
+; ctrl+单击跳转到定义 
+^RButton::
+  Send,{Click}{Ctrl Down}{F12}{Ctrl Up}
+Return
+
+#IfWinActive
+
+; Vs结束
+
+; =========================自定义热字串-开始============================
+
+::mb::
+	SendInput,msgBox
+return
+
+; =========================自定义热字串-结束============================
+
+;========================================自定义结束========================================
 
 
 ^!#r:: 
@@ -1972,3 +2040,5 @@ ExitApp
 
 ; vim: textwidth=120 wrap tabstop=4 shiftwidth=4
 ; vim: foldmethod=marker fdl=0
+
+#ESC::Run,D:\Common\CommonAHK\Capsez\capsez.ahk
