@@ -919,10 +919,83 @@ CapsLock & Enter:: GoSub,Sub_MaxRestore
 ; 删除一行
 DeleteOneLine()
 {
-  SendInput,{Home 2}+{End}{Backspace 2}
+  temp:=clipboard
+  check:=CheckIsSpace()
+  if(check="1")
+  {
+  
+     SendInput,{Home 2}+{End}{Backspace}
+  }
+  else
+  {
+    
+     SendInput,{Home 2}+{End}{Backspace 2}
+  }
+  
+  clipboard:=temp
   Return
 }
 
+; 判断左边是否是空
+CheckLeftIsSpace()
+{
+   clipboard := ""
+   SendInput,+{Home}
+   SendInput,^c
+   ClipWait,0.2
+   ; 还原光标位置
+   
+   if(clipboard="""")
+   {
+	  return "1" 
+   }
+   else
+   {
+      SendInput,{Right}
+      return "0"
+   }
+}
+; 判断两边是否是空
+CheckIsSpace()
+{
+   clipboard := ""
+   SendInput,+{Home}
+   SendInput,^c
+   ClipWait,0.2
+   LeftFlag:="1"
+   if(clipboard="")
+   {
+	  LeftFlag:="1" 
+   }
+   else
+   {
+      LeftFlag:="0"
+	  SendInput,{Right}
+   }
+   clipboard := ""
+   SendInput,+{End}
+   SendInput,^c
+   ClipWait,0.2
+   RightFlag:="1"
+   if(clipboard="")
+   {
+	  RightFlag:="1" 
+   }
+   else
+   {
+      RightFlag:="0"
+      ; 还原光标位置
+      SendInput,{Left}
+   }
+   if(LeftFlag="1" and RightFlag="1")
+   {
+     return "1"
+   }
+   else
+   {
+     return "0"
+   }
+}
 CheckWordLeftOrRight()
 {
    clipboard := ""
@@ -1026,9 +1099,10 @@ CapsLock & )::Send, (){Left}
 
 CapsLock & q::SendInput,q
 CapsLock & u::SendInput,u
-CapsLock & i::SendInput,i
 CapsLock & g::SendInput,g
 CapsLock & y::SendInput,y
+CapsLock & P::SendInput,p
+
 ; 解决按了以后锁定大写的问题
 
 CapsLock & r::SendInput,{Shift}
@@ -1039,7 +1113,12 @@ CapsLock & m:: send,{Blind}^{Left}
 ; 自动完成括号等开始
 CapsLock & <::SendInput,`<`>{Left}
 ; 大括号很特殊 需要这么输出才行
-CapsLock & [::Send, {{}{}}{Left}
+CapsLock & [::
+{
+	Send, {{}{Right}{Enter}
+	Send,{}}{Up}
+	Return
+}
 CapsLock & '::SendInput,""{Left}
 CapsLock & w::
 tempA:=clipboard
@@ -1134,33 +1213,7 @@ return
 `; & v::SendInput,^v
 ;复制粘贴相关结束
 
-
-; Vs中生效开始  Vs开始
-#IfWinActive, ahk_exe devenv.exe
-
-`; & z::SendInput, {Ctrl Down}{Shift Down}{Alt Down}{F12}{Ctrl Up}{Shift Up}{Alt Up}
-`; & t::SendInput, {Ctrl Down}[s{Ctrl Up}
-
-CapsLock & `;::SendInput,{End};
-CapsLock & g::SendInput,=
-
-; ctrl+单击跳转到定义 
-^RButton::
-  Send,{Click}{Ctrl Down}{F12}{Ctrl Up}
-Return
-
-CapsLock & ~i::
-Input,OutputVar, L1 T1
-if (OutputVar = "i")
-   Send,{Down}{BackSpace}""{Left}
-if (OutputVar = "k")
-   Send,{Down}{BackSpace}(){Left}
-return 
  
-
-#IfWinActive
-; Vs中生效 结束
-
 
 
 ;************** 自定义结束 **************
