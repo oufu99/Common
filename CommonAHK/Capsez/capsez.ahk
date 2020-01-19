@@ -2040,5 +2040,3 @@ ExitApp
 
 ; vim: textwidth=120 wrap tabstop=4 shiftwidth=4
 ; vim: foldmethod=marker fdl=0
-
-#ESC::Run,D:\Common\CommonAHK\Capsez\capsez.ahk
