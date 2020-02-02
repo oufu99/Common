@@ -1,32 +1,20 @@
 ﻿
-Hotkey,CapsLock & ~t,subWordt
+; Tab用来打开程序或者是选中单词 行等
 
 ; 打开记事本  打开Notepad++
-subWordt:
-Hotkey,CapsLock & t,off
-Input,outputvar,L1 T1
-Switch OutputVar 
-{
-case "t":
-{
-  
-  IfWinExist, Notepad++
-		WinActivate ; 使用前面找到的窗口
-	else
-	{
-	   Run, %NotePadPath%
-	   WinActivate ; 
-	}
-}
-Default:
-{
-  Hotkey,CapsLock & t,on
-  Send,%OutputVar%
-}
-}
+Tab & t::
+IfWinExist, Notepad++
+	 {
+   	 	WinActivate ; 使用前面找到的窗口
+	 }
+   	 else
+   	 {
+   	    Run, %NotePadPath%
+   	    WinActivate ; 
+   	 }
 return
 
-^+q::
+Tab & b::
 InputBox, ChoiceText, 请选择您想要的操作, 1.备份AdBlock 2.还原AdBlock
 if ChoiceText=1
 {

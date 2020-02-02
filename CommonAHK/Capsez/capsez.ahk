@@ -1,32 +1,28 @@
 #singleinstance force
 
 
-
-
 ;  CapsLock & d   用于复制   
 
 Hotkey,CapsLock & ~i,subWordi
-
 
 subWordi:
 Hotkey,CapsLock & k,off
 Input,outputvar,L1 T1
 Switch OutputVar 
 {
-case "i":
-{
-   Send,{BackSpace}""{Left}
-}
-case "k":
-{
-	Send,{BackSpace}(){Left}
+	case "i":
+	{
+		Send,{BackSpace}""{Left}
+	}
+	case "k":
+	{
+		Send,{BackSpace}(){Left}	
+	}
+	Default:
+	{
+		Send,%OutputVar%
+	}
 	Hotkey,CapsLock & k,on
-}
-Default:
-{
-  Hotkey,CapsLock & k,on
-  Send,%OutputVar%
-}
 }
 return
 
@@ -1183,7 +1179,6 @@ Tab & Space:: send,{Backspace}
 `; & d::DeleteOneLine()
 ; ; & d::SendInput,{Home 2}+{End}
 Tab & d::SendInput,{Home 2}+{End}
- 
 ; 增强剪切板 如果没选中任何东西就复制一整行 去掉浏览器的小尾巴
 $^c::
     clipboard = 
@@ -1396,7 +1391,7 @@ return
 ;`::EzMenuShow()
 
 
-;************** Alttab相关 ************** {{{2
+;************** Alttab相关 **************  
 
 ;按住左键再进行滚轮，在AltaTab菜单中，可以点击右键或者按空格进行确认选择。
 ;多用在把文件拖到别的程序中打开，或者类似于qq微信传文件。也可以将浏览器中的图片直接拖到文件管理器中保存
@@ -1456,7 +1451,7 @@ Space::send,{Alt Up}
 
 #IfWinActive
 
-;************** tab相关 ************** {{{2
+;************** tab相关 **************  
 ;基本操作上下左右，还可以扩展，主要用在左键右鼠的操作方式
 
 ;对应任务栏上固定的前5个程序快速切换
