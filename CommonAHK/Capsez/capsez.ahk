@@ -1086,7 +1086,7 @@ CapsLock & l:: SendInput,{Blind}{Right}
 CapsLock & e::SendInput,{End}
 CapsLock & b::SendInput,{Home}
 ; 通用的情况很有可能按错成l 只有在Vs中才能用到;
-CapsLock & `;::SendInput,{Right}
+CapsLock & `;::SendInput,{End};
 CapsLock & Backspace::SendInput,{Backspace}
 ;CapsLock & n:: SendInput,{Blind}{Right}
 ;CapsLock & m:: SendInput,{Blind}{Left}
@@ -1125,10 +1125,10 @@ CapsLock & <::SendInput,`<`>{Left}
 ; 大括号很特殊 需要这么输出才行
 CapsLock & [::
 {
-	Send, {{}{Right}{Enter}
-	Send,{}}{Up}
-	Return
+ Send, {{}{}}{Left}
+ return
 }
+
 CapsLock & '::SendInput,""{Left}
 CapsLock & w::
 tempA:=clipboard
@@ -1245,6 +1245,15 @@ CapsLock & g::SendInput,=
   Send,{Click}{Ctrl Down}{F12}{Ctrl Up}
 Return
 
+CapsLock & [::
+{
+ 
+	; 大括号输入
+	Send, {{}{Enter}
+	 
+	Return
+}
+
 #IfWinActive
 
 ; Vs结束
@@ -1265,26 +1274,7 @@ return
 	;down:=(down) ? 0 : 1
 	Reload    ;<==用重启脚本来修复已知缺陷：需要按两次F2才能再开启hint by Zz
 return
-
-;将caps替换为esc  恢复Caps功能 
-CapsLock::
-;	suspend permit
-;	SendInput,{Escape}
-return
-
-;暂停热键，可以再按恢复
-pause::
-^!#t::
-	suspend permit
-	pause toggle
-return
-
-;暂停脚本，可以右键菜单选择或者用重启脚本恢复，不怎么需要用
-^!#z::
-	suspend permit
-	suspend toggle
-return
-
+ 
 
 ;+CapsLock:: CapsLock "之前的写法
 ;^PrintScreen::
@@ -1295,31 +1285,7 @@ return
 Return
 
 
-;************** 分号;相关 ************** {{{2
-
-
-;粘贴然后回车，多用在搜索框等输入的位置
-`; & p::
-`; & g::
-	GV_KeyClickAction1 := "SendInput,^{Home}^+{End}^v{Enter}"
-	GV_KeyClickAction2 := "SendInput,^v{Enter}"
-	GoSub,Sub_KeyClick123
-return
-
-
-
-
-
-
-;粘贴并转到,多数浏览器和tc中都可用
-`; & u:: send,^t!d^v{Enter}
-;`; & u:: send,^t!dwww.^v{Enter}
-
-;`; & 1:: send,%A_YYYY%-%A_MM%-%A_DD%
-`; & 1:: send,% fun_GetFormatTime("yyyy-MM-dd")
-`; & 2:: AscSend(fun_GetFormatTime(" HHmm"))
-;`; & `:: SendRaw,% "#" . fun_GetFormatTime("MM-dd")
-`; & 3:: SendRaw,% "#" . fun_GetFormatTime("MMdd")
+;************** 分号;相关 ************** 
 
 ;恢复分号自身功能
 ;$`;:: SendInput,`;
