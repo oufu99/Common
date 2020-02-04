@@ -14,7 +14,7 @@ IfWinExist, Notepad++
    	 }
 return
 
-Tab & b::
+^+q::
 InputBox, ChoiceText, 请选择您想要的操作, 1.备份AdBlock 2.还原AdBlock
 if ChoiceText=1
 {

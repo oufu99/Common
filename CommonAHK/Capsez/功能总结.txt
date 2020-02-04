@@ -8,8 +8,10 @@ JKMove
 发送一大串文本
 SendInput {Text} 123木头人  
 
-判断前一个字母是不是某个数字
-JKMove
+
+判断字符串是否包含某一个字符串  如果没有返回0  这个返回4
+strIndex:=InStr("123abc789","abc") 
+msgBox,%strIndex%  
 
 方法说明
 if   WinExist("ahk_exe Ssms.exe") ; 判断是否存在
@@ -31,13 +33,18 @@ if  WinExist("ahk_exe Ssms.exe")  ; 存在就最大化
 Return
 
 ^p::    正则表达
- SetTitleMatchMode RegEx
+SetTitleMatchMode RegEx
 SetTitleMatchMode Fast
 if WinExist(".*等[\d]个会话")  ; 正则匹配
 
 
 ; 剪切板
+
+获取值:
+tempClip:=clipboard
+设置:
 clipboard = my text   
+发送:
 Send,%clipboard%
  
 ; 提示框
@@ -53,4 +60,4 @@ else
 
 判断键是否按下 判断大写状态   jkCode
 
-操作剪切板 shortCode
+ 

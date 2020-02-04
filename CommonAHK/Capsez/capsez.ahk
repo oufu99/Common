@@ -16,14 +16,14 @@ Switch OutputVar
 	}
 	case "k":
 	{
-		Send,{BackSpace}(){Left}	
+		Send,{BackSpace}(){Left}		
 	}
 	Default:
 	{
-		Send,%OutputVar%
+		Send,%OutputVar%	
 	}
-	Hotkey,CapsLock & k,on
 }
+Hotkey,CapsLock & k,on
 return
 
 
@@ -1023,7 +1023,35 @@ CheckWordLeftOrRight()
       return "zuo"
    }
 }
- 
+
+; win+e 如果剪切板中是路径就直接打开
+#e::
+{
+
+tempClip:=clipboard
+Sleep,200
+strIndex1:=InStr(tempClip,":\") 
+strIndex2:=InStr(tempClip,":/")
+; 如果是文件就不打开
+strIndex3:=InStr(tempClip,".")
+SendInput,#e
+if((strIndex1 > 0 || strIndex2 > 0) && strIndex3 = 0)
+{
+	; msgBox,33
+  Sleep,500
+  Send,!d
+  Sleep,200
+  Send,^v
+  Sleep,100
+  Send,{Enter}
+}
+else
+{
+; msgBox,44
+}
+
+return 
+}
 
 ; 向左选中一个单词并取消掉最后的一个空格
 CheckLeftWord(){
@@ -1116,7 +1144,7 @@ CapsLock & p::SendInput,p
 ; 解决按了以后锁定大写的问题
 
 CapsLock & r::SendInput,{Shift}
-CapsLock & f:: SendInput,{Enter}
+CapsLock & f:: SendInput,{End}{Enter}
 CapsLock & n:: send,{Blind}^{Right}
 CapsLock & m:: send,{Blind}^{Left}
 
@@ -1151,14 +1179,19 @@ return
 
 
 
-; 自动完成括号等结束
+; 自动完成括号等结束  +是Shift  ^是ctrl
+Tab & h:: SendInput,+{Left}
+Tab & j:: SendInput,+{Down}
+Tab & l:: SendInput,+{Right}
+Tab & k:: SendInput,+{Up}}
 
-Tab & h:: SendInput,{Blind}{Shift Down}{Left}{Shift Up}
-Tab & j:: SendInput,{Blind}{Shift Down}{Down}{Shift Up}
-Tab & l:: SendInput,{Blind}{Shift Down}{Right}{Shift Up}
-Tab & k:: SendInput,{Blind}{Shift Down}{Up}{Shift Up}
+Tab & b:: SendInput,+^{Home}
+Tab & e:: SendInput,+^{End}
+Tab & n:: SendInput,+^{Right}
+Tab & m:: SendInput,+^{Left}
 
-Tab & r:: SendInput,{Blind}{Shift Down}{Ctrl Down}{Left}{Shift Up}{Ctrl Up}
+
+Tab & r:: SendInput,{Blind}+^{Left}
 Tab & Space:: send,{Backspace}
 ; ;用来选中
 
@@ -1181,6 +1214,8 @@ Tab & Space:: send,{Backspace}
 Tab & d::SendInput,{Home 2}+{End}
 ; 增强剪切板 如果没选中任何东西就复制一整行 去掉浏览器的小尾巴
 $^c::
+IfWinNotActive,ahk_exe devenv.exe
+{
     clipboard = 
 	SendInput,^c
 	; 判断剪切板是否为空
@@ -1208,8 +1243,14 @@ $^c::
 		; 匹配正则结束
 		Clipboard := content
 		Return
-	}	
+	}
+}
+else
+{
+	SendInput,^c
+}	
 return
+ 
 
 $^x::
 	clipboard = 
@@ -1247,10 +1288,9 @@ Return
 
 CapsLock & [::
 {
- 
-	; 大括号输入
+	; Vs大括号输入 形成一个{}中间空一行的样式
 	Send, {{}{Enter}
-	 
+	Send, {}}{Up}{Enter}
 	Return
 }
 
