@@ -1024,6 +1024,20 @@ CheckWordLeftOrRight()
    }
 }
 
+CheckClipIsEmpty()
+{
+
+tempClip:=clipboard
+if(tempClip="")
+{
+  return true
+}
+else
+{
+  return false
+}
+}
+
 ; win+e 如果剪切板中是路径就直接打开
 #e::
 {
@@ -1037,7 +1051,7 @@ strIndex3:=InStr(tempClip,".")
 SendInput,#e
 if((strIndex1 > 0 || strIndex2 > 0) && strIndex3 = 0)
 {
-	; msgBox,33
+  ; msgBox,33
   Sleep,500
   Send,!d
   Sleep,200
@@ -1092,9 +1106,18 @@ CheckRightWord(){
 
 ; ctrl+空格 自动打开listary搜索百度
 ^Space::
+; 判断剪切板是否有值
+
 Send,^j
 sleep,100
 Send,{Space 2}
+; 如果剪切板中有值就直接粘贴
+if(!CheckClipIsEmpty())
+{
+ Send,^v
+ Sleep,200
+ Send,{Enter}
+}
 return
  
 ; 我的其他Ahk代码
@@ -1213,15 +1236,21 @@ Tab & Space:: send,{Backspace}
 `; & d::DeleteOneLine()
 ; ; & d::SendInput,{Home 2}+{End}
 Tab & d::SendInput,{Home 2}+{End}
+
 ; 增强剪切板 如果没选中任何东西就复制一整行 去掉浏览器的小尾巴
+GroupAdd,CopyGroup,ahk_exe devenv.exe
+GroupAdd,CopyGroup,ahk_exe Totalcmd64.exe
+
+; 一些软件不打开 浏览器去小尾巴
 $^c::
-IfWinNotActive,ahk_exe devenv.exe
+IfWinNotActive,ahk_group CopyGroup
 {
     clipboard = 
 	SendInput,^c
 	; 判断剪切板是否为空
 	ClipWait,0.2
-    if(clipboard="" and !(WinActive("ahk_exe chrome.exe")))
+	; 浏览器要用,但是某一部分不要用
+    if(clipboard=""  and !(WinActive("ahk_exe chrome.exe")))
  	{
  	    ; 如果为空就全部复制
         SendInput,{End}{Shift Down}{Home}{Shift Up}
