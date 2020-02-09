@@ -35,11 +35,6 @@ F1::
 
 ;************** 自定义其他的结束 **************
 
-
-;CapsLock增强脚本，例子
-;by Ez
-
-
 ;管理员权限代码，放在文件开头 {{{1
 Loop, %0%
   {
@@ -942,11 +937,33 @@ CapsLock & Enter:: GoSub,Sub_MaxRestore
 
 ;************** 自定义方法开始 **************
 
+; 判断字符串是否为空 bool CheckStrIsNull
+; 判断剪切板两边是否为空(就是判断有没有选中值) string  CheckOutsideIsSpace()
+; 删除一行 void DeleteOneLine()
+
+CheckStrIsNull(inputStr)
+{
+   LenthA:=StrLen(inputStr)
+    
+   inputStr := StrReplace(inputStr, A_Space, "")
+   inputStr := StrReplace(inputStr, " ", "")
+   LenthB:=StrLen(inputStr)
+    
+   if(LenthB=0)
+   {
+     return true
+   }
+   else
+   {
+      return false
+   }
+}
+
 ; 删除一行
 DeleteOneLine()
 {
   temp:=clipboard
-  check:=CheckIsSpace()
+  check:=CheckOutsideIsSpace()
   ; msgBox,%check%
   Switch check 
   {
@@ -970,7 +987,7 @@ DeleteOneLine()
 }
 
 ; 判断两边是否是空
-CheckIsSpace()
+CheckOutsideIsSpace()
 {
    clipboard := ""
    SendInput,{End}
@@ -1105,9 +1122,8 @@ CheckRightWord(){
 ; 我的其他Ahk代码
 
 ; ctrl+空格 自动打开listary搜索百度
-^Space::
+^+Space::
 ; 判断剪切板是否有值
-
 Send,^j
 sleep,100
 Send,{Space 2}
@@ -1119,6 +1135,13 @@ if(!CheckClipIsEmpty())
  Send,{Enter}
 }
 return
+ 
+^Space::
+; 判断剪切板是否有值
+Send,^j
+sleep,100
+Send,{Space 2}
+return 
  
 ; 我的其他Ahk代码
 
@@ -1323,6 +1346,9 @@ CapsLock & [::
 	Send, {}}{Up}{Enter}
 	Return
 }
+
++RButton::Send,^+.
+
 
 #IfWinActive
 
