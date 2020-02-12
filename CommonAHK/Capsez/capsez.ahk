@@ -1122,7 +1122,15 @@ CheckRightWord(){
 ; 我的其他Ahk代码
 
 ; ctrl+空格 自动打开listary搜索百度
-^+Space::
+^Space::
+; 判断剪切板是否有值
+Send,^j
+sleep,100
+Send,{Space 2}
+return 
+ 
+ 
+#Space::
 ; 判断剪切板是否有值
 Send,^j
 sleep,100
@@ -1135,20 +1143,10 @@ if(!CheckClipIsEmpty())
  Send,{Enter}
 }
 return
- 
-^Space::
-; 判断剪切板是否有值
-Send,^j
-sleep,100
-Send,{Space 2}
-return 
- 
 ; 我的其他Ahk代码
 
 
-
 ;************** 代码开始 **************
-!a::SendInput,{End}{Shift Down}{Home}{Shift Up}
 ^y::Click,right
 CapsLock & d::DeleteOneLine()
 CapsLock & Space:: send,{Backspace}
@@ -1180,7 +1178,7 @@ CapsLock & )::Send, (){Left}
 
 
 ; 解决按了以后锁定大写的问题
-
+ 
 CapsLock & q::SendInput,q
 CapsLock & u::SendInput,u
 CapsLock & g::SendInput,g
@@ -1283,7 +1281,7 @@ IfWinNotActive,ahk_group CopyGroup
 	; 浏览器单独处理
     IfWinActive,ahk_exe chrome.exe
 	{
-		while(Clipboard = )
+		while(clipboard = )
 		{
 			ClipWait, 0.3
 		}
@@ -1300,7 +1298,7 @@ IfWinNotActive,ahk_group CopyGroup
 }
 else
 {
-	SendInput,^c
+	 
 }	
 return
  
