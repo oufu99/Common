@@ -1262,45 +1262,56 @@ Tab & d::SendInput,{Home 2}+{End}
 GroupAdd,CopyGroup,ahk_exe devenv.exe
 GroupAdd,CopyGroup,ahk_exe Totalcmd64.exe
 
-; 一些软件不打开 浏览器去小尾巴
+; 去掉浏览器去小尾巴
+; $^c::
+; SendInput,^c
+; ; 浏览器单独处理
+; IfWinActive,ahk_exe chrome.exe
+; {
+;    ; 判断剪切板是否为空
+;    Sleep,0.2
+;    content :=  clipboard
+;    msgBox,%clipboard%
+;    ; 匹配正则开始
+;    content := RegExReplace(content, "`as)————————————————(\r\n?|\n).*原文链接：https?://blog\.csdn\.net.*?$")
+;    content := RegExReplace(content, "`as)作者：[^\r\n]*(\r\n?|\n)链接：https://www.zhihu.com.*?$")
+;    content := RegExReplace(content, "`as)作者：[^\r\n]*(\r\n?|\n)链接：https://www.imooc.com.*?$")
+;    ; 匹配正则结束
+;    msgBox,%content%
+;    clipboard := content
+;    return
+; }	
+; return
+
 $^c::
-IfWinNotActive,ahk_group CopyGroup
 {
-    clipboard = 
-	SendInput,^c
-	; 判断剪切板是否为空
-	ClipWait,0.2
-	; 浏览器要用,但是某一部分不要用
-    if(clipboard=""  and !(WinActive("ahk_exe chrome.exe")))
- 	{
- 	    ; 如果为空就全部复制
-        SendInput,{End}{Shift Down}{Home}{Shift Up}
-	    SendInput,^c
-	    SendInput,{End}
- 	}
-	; 浏览器单独处理
-    IfWinActive,ahk_exe chrome.exe
-	{
-		while(clipboard = )
-		{
-			ClipWait, 0.3
-		}
-		Sleep 200
-		content := Clipboard
-		; 匹配正则开始
-		content := RegExReplace(content, "`as)————————————————(\r\n?|\n).*原文链接：https?://blog\.csdn\.net.*?$")
-		content := RegExReplace(content, "`as)作者：[^\r\n]*(\r\n?|\n)链接：https://www.zhihu.com.*?$")
-		content := RegExReplace(content, "`as)作者：[^\r\n]*(\r\n?|\n)链接：https://www.imooc.com.*?$")
-		; 匹配正则结束
-		Clipboard := content
-		Return
-	}
-}
-else
-{
+  clipboard:=
+ 
+  SendInput,^c
+  IfWinActive,ahk_exe chrome.exe
+  {
+     ; clipWait方法,只会判断剪切板是否为空 只要之前有值也是返回true的
+     ClipWait, 0.8
+     ; 判断剪切板是否为空
+     ; msgBox,%clipboard%
+     content :=  clipboard
+     ; 匹配正则开始
+ 
+	 content := RegExReplace(content, "—{8,}[\s\S]*原文链接：https?://blog\.csdn\.net[\s\S]*$","")
+	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.zhihu.com[\s\S]*$","")
+ 	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.imooc.com[\s\S]*$","")
+	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.jianshu.com[\s\S]*$","")
+	 ; 把最后的空格或者换行符移除掉 上面是.*? 匹配非换行符
 	 
-}	
-return
+	 content := RegExReplace(content, "`as)\s+$")
+     ; 匹配正则结束
+     clipboard := content
+  }	
+  return
+}
+
+; ctrl+shift+c整行复制
++^c:: SendInput,{Home}+{End}^c
  
 
 $^x::
