@@ -1285,8 +1285,7 @@ GroupAdd,CopyGroup,ahk_exe Totalcmd64.exe
 
 $^c::
 {
-  clipboard:=
- 
+  clipboard=
   SendInput,^c
   IfWinActive,ahk_exe chrome.exe
   {
