@@ -4,8 +4,12 @@
 ;  CapsLock & d   用于复制   
 
 
+
+
+ 
 ;************** 两个关键字开始 **************
 Hotkey,CapsLock & ~i,subWordi
+
 subWordi:
 Hotkey,CapsLock & k,off
 Input,outputvar,L1 T1
@@ -26,17 +30,24 @@ Switch OutputVar
 }
 Hotkey,CapsLock & k,on
 return
+
 ;************** 两个关键字结束 **************
 
-;************** 自定义其他的开始 **************
 
-; 注释掉F1,免得总是按错 F1也没啥用
-F1::
+; ;************** 自动重启脚本开始 ************** 
+;设定15分钟重启一次脚本，防止卡键 1000*60*15
+GV_ReloadTimer := % 1000*5*1
 
 
-;************** 自定义其他的结束 **************
- 
- 
+Gosub,AutoReloadInit
+AutoReloadInit:
+	SetTimer, SelfReload, % GV_ReloadTimer
+return
+
+SelfReload:
+	reload
+return
+;************** 自动重启脚本结束 ************** 
 
 
 
@@ -232,6 +243,18 @@ CheckRightWord(){
 
 ;************** CapsLock相关开始 ************** 
 
+CapsLock::
+	suspend permit
+	SendInput,{Escape}
+return
+
+; ctrl+caps恢复大写
+^CapsLock::
+	GetKeyState t, CapsLock, T
+	IfEqual t,D, SetCapslockState AlwaysOff
+	Else SetCapslockState AlwaysOn
+Return
+
 ;enter 回车窗口最大化
 CapsLock & Enter:: GoSub,Sub_MaxRestore
 
@@ -306,16 +329,7 @@ else
 clipboard:=tempA
 return
  
-CapsLock::
-	suspend permit
-	SendInput,{Escape}
-return
 
-^CapsLock::
-	GetKeyState t, CapsLock, T
-	IfEqual t,D, SetCapslockState AlwaysOff
-	Else SetCapslockState AlwaysOn
-Return
 ;************** CapsLock相关结束 ************** 
 
 ;************** 分号相关开始 ************** 
@@ -423,21 +437,13 @@ $^c::
 }
 
 ; ctrl+shift+c整行复制
-+^c:: SendInput,{Home}+{End}^c
++^c:: SendInput,{Home}+{End}^c{End}
  
 
-$^x::
-	clipboard = 
-	SendInput,^x
-	; 判断剪切板是否为空
-	ClipWait,0.2
-    if(clipboard="" and !(WinActive("ahk_exe chrome.exe")))
- 	{
- 	   ; 如果为空就全部复制
-       SendInput,{End}{Shift Down}{Home}{Shift Up}
++^x::
+	 SendInput,{End}{Shift Down}{Home}{Shift Up}
 	   SendInput,^x
 	   SendInput,{End}
- 	}
 return
  
 `; & v::SendInput,^v
@@ -486,7 +492,13 @@ return
 ;************** 热字串相关结束 ************** 
 
  
+;************** 自定义其他的开始 **************
 
+; 注释掉F1,免得总是按错 F1也没啥用
+F1::
+
+
+;************** 自定义其他的结束 **************
  
 
  
