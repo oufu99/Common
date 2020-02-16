@@ -36,7 +36,7 @@ return
 
 ; ;************** 自动重启脚本开始 ************** 
 ;设定15分钟重启一次脚本，防止卡键 1000*60*15
-GV_ReloadTimer := % 1000*5*1
+GV_ReloadTimer := % 1000*60*15
 
 
 Gosub,AutoReloadInit
@@ -391,7 +391,7 @@ sleep,100
 Send,{Space 2}
 return 
  
-#Space::
+^+Space::
 ; 判断剪切板是否有值
 Send,^j
 sleep,100
