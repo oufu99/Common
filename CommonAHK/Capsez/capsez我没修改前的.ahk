@@ -1,7 +1,39 @@
-;CapsLock增强脚本，例子
-;by Ez
-;v190721 添加在tc里面中键点击打开目录
-;v190904 更新暂停等热键，直接把AutoHotkey.exe改名为capsez.exe
+#singleinstance force
+
+
+;  CapsLock & d   用于复制   
+
+Hotkey,CapsLock & ~i,subWordi
+
+subWordi:
+Hotkey,CapsLock & k,off
+Input,outputvar,L1 T1
+Switch OutputVar 
+{
+	case "i":
+	{
+		Send,{BackSpace}""{Left}
+	}
+	case "k":
+	{
+		Send,{BackSpace}(){Left}		
+	}
+	Default:
+	{
+		Send,%OutputVar%	
+	}
+}
+Hotkey,CapsLock & k,on
+return
+
+
+;************** 自定义其他的开始 **************
+
+; 注释掉F1,免得总是按错 F1也没啥用
+F1::
+
+
+;************** 自定义其他的结束 **************
 
 ;管理员权限代码，放在文件开头 {{{1
 Loop, %0%
@@ -79,14 +111,65 @@ GroupAdd,GroupDiagOpenAndSave,选择文件 ahk_class #32770
 ;设定15分钟重启一次脚本，防止卡键 1000*60*15
 GV_ReloadTimer := % 1000*60*5
 
-;如果是自己从tc中启动的本脚本，将会自动带上COMMANDER_PATH
-;但如果是别的地方，比如注册表的autorun环节先启动的本脚本，那么就有必要先设置这个变量
-;COMMANDER_PATH := % GF_GetSysVar("COMMANDER_PATH")
+
 ;if COMMANDER_PATH = 
 ;{
+;msgbox % COMMANDER_PATH
 ;COMMANDER_PATH := "D:\totalcmd_bar"
 ;EnvSet,COMMANDER_PATH,D:\totalcmd_bar
 ;}
+
+;如果是自己从tc中启动的本脚本，将会自动带上COMMANDER_PATH
+;但如果是别的地方，比如注册表的autorun环节先启动的本脚本，那么就有必要先设置这个变量
+;1、先启动脚本，正常是随系统自启动，那么COMMANDER_PATH为空
+;2、再启动tc，那么COMMANDER_PATH变量还是为空，可以读取运行中的exe路径
+;3、最后再是根据脚本所在目录中是否存在TOTALCMD.EXE或者TOTALCMD64.EXE
+WinGet,TcExeFullPath,ProcessPath,ahk_class TTOTAL_CMD
+;msgbox % A_WorkingDir
+;msgbox % TcExeFullPath==""
+;msgbox % COMMANDER_PATH=""
+;msgbox %TcExeFullPath%
+
+if !TcExeFullPath ;没tc在运行
+{
+	if A_Is64bitOS {
+		if FileExist(A_WorkingDir . "\" . "TOTALCMD64.EXE") {
+			TcExeFullPath := A_WorkingDir . "\" . "TOTALCMD64.EXE"
+			EnvSet,COMMANDER_PATH, A_WorkingDir
+		} else if FileExist(A_WorkingDir . "\" . "TOTALCMD.EXE") {
+			TcExeFullPath := A_WorkingDir . "\" . "TOTALCMD.EXE"
+			EnvSet,COMMANDER_PATH, A_WorkingDir
+		} else{
+			toolTip  
+			sleep 2000
+			tooltip
+		}
+	}
+	else {
+		if FileExist(A_WorkingDir . "\" . "TOTALCMD.EXE") {
+			TcExeFullPath := A_WorkingDir . "\" . "TOTALCMD.EXE"
+			EnvSet,COMMANDER_PATH, A_WorkingDir
+		} else {
+			toolTip  
+			sleep 2000
+			tooltip
+		}
+	}
+}
+else{ ;有tc在运行
+	if !COMMANDER_PATH  ;但脚本先启动，比如随系统自启动，所以并没有COMMANDER_PATH变量
+	{
+		WinGet,TcExeName,ProcessName,ahk_class TTOTAL_CMD
+		StringTrimRight, COMMANDER_PATH, TcExeFullPath, StrLen(TcExeName)+1
+		EnvSet,COMMANDER_PATH, % COMMANDER_PATH
+	}
+	else{
+		;有TcExeFullPath 也有COMMANDER_PATH了，
+		;msgbox 啥都不做
+	}
+}
+
+
 
 ;GV_ToolsPath := % GF_GetSysVar("ToolsPath")
 GV_TempPath := % GF_GetSysVar("TEMP")
@@ -380,7 +463,7 @@ return
 ;************** 按住ESC拖动$    **************
 
 
-;************** 自定义方法^ ************** {{{1
+;************** Ez的方法^ ************** {{{1
 GF_GetSysVar(sys_var_name)
 {
 	EnvGet, sv,% sys_var_name
@@ -597,7 +680,7 @@ OpenClipURLS:
 		}
 	}
 return
-;************** 自定义方法$ **************
+;************** Ez的方法$ **************
 
 
 ;************** Youdao_网络翻译^ ********* {{{1
@@ -805,7 +888,6 @@ Escape & d:: SendInput,{Delete}
 Escape & .:: AltTab
 Escape & ,:: ShiftAltTab
 
-Escape & `;:: WinClose A
 
 ;enter 回车窗口最大化
 ;Escape & Enter:: WinMaximize A
@@ -842,135 +924,461 @@ return
 
 
 ;************** CapsLock相关 ************** {{{2
-;win+caps+按键
-;Capslock & e::
-;state := GetKeyState("LWin", "T")  ; 当 CapsLock 打开时为真, 否则为假.
-;if state
-	;msgbox handle！
-;else
-	;send #e
-;return
 
+
+
+	
+
+
+
+;enter 回车窗口最大化
+CapsLock & Enter:: GoSub,Sub_MaxRestore
+
+
+;************** 自定义方法开始 **************
+
+; 判断字符串是否为空 bool CheckStrIsNull
+; 判断剪切板两边是否为空(就是判断有没有选中值) string  CheckOutsideIsSpace()
+; 删除一行 void DeleteOneLine()
+
+CheckStrIsNull(inputStr)
+{
+   LenthA:=StrLen(inputStr)
+    
+   inputStr := StrReplace(inputStr, A_Space, "")
+   inputStr := StrReplace(inputStr, " ", "")
+   LenthB:=StrLen(inputStr)
+    
+   if(LenthB=0)
+   {
+     return true
+   }
+   else
+   {
+      return false
+   }
+}
+
+; 删除一行
+DeleteOneLine()
+{
+  temp:=clipboard
+  check:=CheckOutsideIsSpace()
+  ; msgBox,%check%
+  Switch check 
+  {
+    ; 1是行头 2是行内有数据 3是本行全是空格
+    case "1":
+    {
+    	SendInput,{Backspace}
+    }
+	case "2":
+    {
+        SendInput,{Home 2}+{End}{Backspace 2}
+    }
+	case "3":
+    {
+       ; 只有一行空格的时候特殊处理
+       SendInput,{Home}+{End}{Backspace 2}
+    }
+  }
+  clipboard:=temp
+  Return
+}
+
+; 判断两边是否是空
+CheckOutsideIsSpace()
+{
+   clipboard := ""
+   SendInput,{End}
+   SendInput,+{Home}
+   SendInput,^c
+   ClipWait,0.2
+   LenthA:=StrLen(clipboard)
+   ; msgBox,%clipboard%
+   ; msgBox,%LenthA%
+   clipboard := StrReplace(clipboard, A_Space, "")
+   clipboard := StrReplace(clipboard, " ", "")
+   LenthB:=StrLen(clipboard)
+   ; msgBox,%clipboard%
+   ; msgBox,%LenthB%
+   ; 让光标返回到最后面
+   SendInput,{End}
+   ; 这个要先验证 不然就返回2了  
+   ; a不等于b就说明a是有空格的,b是把空格全部替换掉,如果等于0了就代表这行
+   if(LenthA!=LenthB and LenthB=0)
+   {
+     ; 全是空格 全是空格需要特殊处理
+     return "3"
+   }
+   if(StrLen(clipboard)=0)
+   {
+     return "1"
+   }
+   else
+   {
+      return "2"
+   }
+}
+
+ 
+CheckWordLeftOrRight()
+{
+   clipboard := ""
+   SendInput,+{Left}
+   SendInput,^c
+   ClipWait,0.2
+   ; 还原光标位置
+   SendInput,{Right}
+   if(clipboard=" " or clipboard="""")
+   {
+	  ; 左边是空格,所以是向右边过去
+	  return "you" 
+   }
+   else
+   {
+      return "zuo"
+   }
+}
+
+CheckClipIsEmpty()
+{
+
+tempClip:=clipboard
+if(tempClip="")
+{
+  return true
+}
+else
+{
+  return false
+}
+}
+
+; win+e 如果剪切板中是路径就直接打开
+#e::
+{
+
+tempClip:=clipboard
+Sleep,200
+strIndex1:=InStr(tempClip,":\") 
+strIndex2:=InStr(tempClip,":/")
+; 如果是文件就不打开
+strIndex3:=InStr(tempClip,".")
+SendInput,#e
+if((strIndex1 > 0 || strIndex2 > 0) && strIndex3 = 0)
+{
+  ; msgBox,33
+  Sleep,500
+  Send,!d
+  Sleep,200
+  Send,^v
+  Sleep,100
+  Send,{Enter}
+}
+else
+{
+; msgBox,44
+}
+
+return 
+}
+
+; 向左选中一个单词并取消掉最后的一个空格
+CheckLeftWord(){
+clipboard := ""
+SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
+; 把这些复制 判断最后一个
+SendInput,{Right}{Shift Down}{Left}{Shift Up}
+SendInput,^c
+ClipWait,0.2
+; 专门为了Vs改的,如果后面是空格就去掉
+if(clipboard=" ")
+{
+ SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}+{Left}
+}
+else
+{
+  SendInput,{Ctrl Down}{Left}{Shift Down}{Right}{Shift Up}{Ctrl Up}
+}
+return
+}
+
+CheckRightWord(){
+	SendInput,{Right}
+	CheckLeftWord()
+}
+
+
+;************** 自定义方法结束 **************
+
+
+;========================================自定义开始========================================
+; 调整了  直接在这文件中搜索 调用任务栏相关程序快捷键
+; ;+空格 改成了BackSpace
+; ;+z 去掉了 免得冲突Vs的按键
+; 删除了 CapsLock & n:: 把CapsLock & o p 改成了n m
+
+; 我的其他Ahk代码
+
+; ctrl+空格 自动打开listary搜索百度
+^Space::
+; 判断剪切板是否有值
+Send,^j
+sleep,100
+Send,{Space 2}
+return 
+ 
+ 
+#Space::
+; 判断剪切板是否有值
+Send,^j
+sleep,100
+Send,{Space 2}
+; 如果剪切板中有值就直接粘贴
+if(!CheckClipIsEmpty())
+{
+ Send,^v
+ Sleep,200
+ Send,{Enter}
+}
+return
+; 我的其他Ahk代码
+
+
+;************** 代码开始 **************
+^y::Click,right
+CapsLock & d::DeleteOneLine()
+CapsLock & Space:: send,{Backspace}
 CapsLock & j:: SendInput,{Blind}{Down}
 CapsLock & k:: SendInput,{Blind}{Up}
 CapsLock & h:: SendInput,{Blind}{Left}
 CapsLock & l:: SendInput,{Blind}{Right}
 
-CapsLock & w:: SendInput,{Blind}^{Right}
-CapsLock & b:: SendInput,{Blind}^{Left}
+CapsLock & e::SendInput,{End}
+CapsLock & b::SendInput,{Home}
+; 通用的情况很有可能按错成l 只有在Vs中才能用到;
+CapsLock & `;::SendInput,{End};
+CapsLock & Backspace::SendInput,{Backspace}
+;CapsLock & n:: SendInput,{Blind}{Right}
+;CapsLock & m:: SendInput,{Blind}{Left}
+; caps加上面的数字会变成大写 所以全部重写
+CapsLock & 1::Send, {!}
+CapsLock & 2::Send, `@  
+CapsLock & 3::Send, {#}
+CapsLock & 4::Send, `$
+CapsLock & 5::Send, `%
+CapsLock & 6::Send, {^} 
+CapsLock & 7::Send, `& 
+CapsLock & 8::Send, `* 
+CapsLock & 9::Send, (){Left}
+CapsLock & )::Send, (){Left}
 
-CapsLock & e:: SendInput,{Blind}{PgDn}
-CapsLock & q:: SendInput,{Blind}{PgUp}
+; 加数字变大写 重写结束
 
-;************** u,i单击双击^ **************
-;CapsLock & i:: SendInput,{Blind}^{Home}
-;CapsLock & u:: SendInput,{Blind}^{End}
-;CapsLock & n:: SendInput,{Blind}{PgDn}
-;CapsLock & m:: SendInput,{Blind}{PgUp}
 
-CapsLock & u::
-	GV_KeyClickAction1 := "SendInput,{End}"
-	GV_KeyClickAction2 := "SendInput,^{End}"
-	GoSub,Sub_KeyClick123
+; 解决按了以后锁定大写的问题
+ 
+CapsLock & q::SendInput,q
+CapsLock & u::SendInput,u
+CapsLock & g::SendInput,g
+CapsLock & y::SendInput,y
+CapsLock & p::SendInput,p
+CapsLock & v::SendInput,v
+
+; 解决按了以后锁定大写的问题
+
+CapsLock & r::SendInput,{Shift}
+CapsLock & f:: SendInput,{End}{Enter}
+CapsLock & n:: send,{Blind}^{Right}
+CapsLock & m:: send,{Blind}^{Left}
+
+; 自动完成括号等开始
+CapsLock & <::SendInput,`<`>{Left}
+; 大括号很特殊 需要这么输出才行
+CapsLock & [::
+{
+ Send, {{}{}}{Left}
+ return
+}
+
+CapsLock & '::SendInput,""{Left}
+CapsLock & w::
+tempA:=clipboard
+isLeft:=CheckWordLeftOrRight()
+if(isLeft="zuo")
+{
+  CheckLeftWord()
+}
+else
+{
+  CheckRightWord()
+}
+clipboard:=tempA
 return
 
-CapsLock & i::
-	GV_KeyClickAction1 := "SendInput,{Home}"
-	GV_KeyClickAction2 := "SendInput,^{Home}"
-	GoSub,Sub_KeyClick123
+
+
+
+
+
+
+
+; 自动完成括号等结束  +是Shift  ^是ctrl
+Tab & h:: SendInput,+{Left}
+Tab & j:: SendInput,+{Down}
+Tab & l:: SendInput,+{Right}
+Tab & k:: SendInput,+{Up}}
+
+Tab & b:: SendInput,+^{Home}
+Tab & e:: SendInput,+^{End}
+Tab & n:: SendInput,+^{Right}
+Tab & m:: SendInput,+^{Left}
+
+
+Tab & r:: SendInput,{Blind}+^{Left}
+Tab & Space:: send,{Backspace}
+; ;用来选中
+
+`; & b::SendInput,{Home}
+`; & e::SendInput,{End}
+
+; 开始 ;开始
+
+`; & j:: SendInput,+{Down}
+`; & k:: SendInput,+{Up}
+`; & h:: SendInput,+{Left}
+`; & l:: SendInput,+{Right}
+`; & n:: SendInput,^{Right}
+`; & m:: SendInput,^{Left}
+
+
+`; & Space:: SendInput,{Delete}
+`; & d::DeleteOneLine()
+; ; & d::SendInput,{Home 2}+{End}
+Tab & d::SendInput,{Home 2}+{End}
+
+; 增强剪切板 如果没选中任何东西就复制一整行 去掉浏览器的小尾巴
+GroupAdd,CopyGroup,ahk_exe devenv.exe
+GroupAdd,CopyGroup,ahk_exe Totalcmd64.exe
+
+; 去掉浏览器去小尾巴
+; $^c::
+; SendInput,^c
+; ; 浏览器单独处理
+; IfWinActive,ahk_exe chrome.exe
+; {
+;    ; 判断剪切板是否为空
+;    Sleep,0.2
+;    content :=  clipboard
+;    msgBox,%clipboard%
+;    ; 匹配正则开始
+;    content := RegExReplace(content, "`as)————————————————(\r\n?|\n).*原文链接：https?://blog\.csdn\.net.*?$")
+;    content := RegExReplace(content, "`as)作者：[^\r\n]*(\r\n?|\n)链接：https://www.zhihu.com.*?$")
+;    content := RegExReplace(content, "`as)作者：[^\r\n]*(\r\n?|\n)链接：https://www.imooc.com.*?$")
+;    ; 匹配正则结束
+;    msgBox,%content%
+;    clipboard := content
+;    return
+; }	
+; return
+
+$^c::
+{
+  clipboard=
+  SendInput,^c
+  IfWinActive,ahk_exe chrome.exe
+  {
+     ; clipWait方法,只会判断剪切板是否为空 只要之前有值也是返回true的
+     ClipWait, 0.8
+     ; 判断剪切板是否为空
+     ; msgBox,%clipboard%
+     content :=  clipboard
+     ; 匹配正则开始
+ 
+	 content := RegExReplace(content, "—{8,}[\s\S]*原文链接：https?://blog\.csdn\.net[\s\S]*$","")
+	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.zhihu.com[\s\S]*$","")
+ 	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.imooc.com[\s\S]*$","")
+	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.jianshu.com[\s\S]*$","")
+	 ; 把最后的空格或者换行符移除掉 上面是.*? 匹配非换行符
+	 
+	 content := RegExReplace(content, "`as)\s+$")
+     ; 匹配正则结束
+     clipboard := content
+  }	
+  return
+}
+
+; ctrl+shift+c整行复制
++^c:: SendInput,{Home}+{End}^c
+ 
+
+$^x::
+	clipboard = 
+	SendInput,^x
+	; 判断剪切板是否为空
+	ClipWait,0.2
+    if(clipboard="" and !(WinActive("ahk_exe chrome.exe")))
+ 	{
+ 	   ; 如果为空就全部复制
+       SendInput,{End}{Shift Down}{Home}{Shift Up}
+	   SendInput,^x
+	   SendInput,{End}
+ 	}
 return
 
-CapsLock & n::
-	GV_KeyClickAction1 := "SendInput,{PgDn}"
-	GV_KeyClickAction2 := "SendInput,^{PgDn}"
-	GoSub,Sub_KeyClick123
+`; & z::SendInput,{Ctrl Down}z{Ctrl Up}
+`; & v::SendInput,^v
+;复制粘贴相关结束
+
+ 
+; Vs开始
+#IfWinActive, ahk_exe devenv.exe
+
+
+`; & z::SendInput, {Ctrl Down}{Shift Down}{Alt Down}{F12}{Ctrl Up}{Shift Up}{Alt Up}
+`; & t::SendInput, {Ctrl Down}[s{Ctrl Up}
+
+CapsLock & `;::SendInput,{End};
+CapsLock & g::SendInput,=
+
+; ctrl+单击跳转到定义 
+^RButton::
+  Send,{Click}{Ctrl Down}{F12}{Ctrl Up}
+Return
+
+CapsLock & [::
+{
+	; Vs大括号输入 形成一个{}中间空一行的样式
+	Send, {{}{Enter}
+	Send, {}}{Up}{Enter}
+	Return
+}
+
++RButton::Send,^+.
+
+
+#IfWinActive
+
+; Vs结束
+
+; =========================自定义热字串-开始============================
+
+::mb::
+	SendInput,msgBox
 return
 
-CapsLock & m::
-	GV_KeyClickAction1 := "SendInput,{PgUp}"
-	GV_KeyClickAction2 := "SendInput,^{PgUp}"
-	GoSub,Sub_KeyClick123
-return
+; =========================自定义热字串-结束============================
 
-;************** u,i单击双击$ **************
+;========================================自定义结束========================================
 
-;***************** 剪贴板相关^ **************
-CapsLock & v::
-	if CapsLockV_presses > 0
-	{
-		CapsLockV_presses += 1
-		return
-	}
-	CapsLockV_presses = 1
-	SetTimer, KeyCapsLockV, 175
-return
-
-KeyCapsLockV:
-	SetTimer, KeyCapsLockV, off
-	if CapsLockV_presses = 1
-	{
-		GoSub,PastePureText
-	}
-	else if CapsLockV_presses = 2
-	{
-			;msgbox 285
-		;Menu, MyMenu, Show
-		;EzOtherMenuShow()
-		;GoSub,EzOtherMenuShow
-		;EzOtherMenuShow()
-	}
-	CapsLockV_presses = 0
-return
-;***************** 剪贴板相关$ **************
-CapsLock & c::
-	GoSub,Sub_ClipAppend
-return
-
-CapsLock & g:: SendInput,{Blind}^w
-CapsLock & r:: SendInput,{Blind}^r
-
-CapsLock & o:: send,{Blind}^+{Tab}
-CapsLock & p:: send,{Blind}^{Tab}
-
-;CapsLock & y:: send,{AppsKey}
-CapsLock & y:: Send {Click Right}
-CapsLock & d:: SendInput,{Delete}
-
-CapsLock & .:: AltTab
-CapsLock & ,:: ShiftAltTab
-
-CapsLock & `;:: WinClose A
-
-;enter 回车窗口最大化
-CapsLock & Enter:: GoSub,Sub_MaxRestore
-;CapsLock & Space:: WinMinimize A
-CapsLock & Space:: send,{Backspace}
 
 ^!#r:: 
 	;<==关闭hint模式键
 	;down:=(down) ? 0 : 1
 	Reload    ;<==用重启脚本来修复已知缺陷：需要按两次F2才能再开启hint by Zz
 return
-
-;将caps替换为esc
-CapsLock::
-	suspend permit
-	SendInput,{Escape}
-return
-
-;暂停热键，可以再按恢复
-pause::
-^!#t::
-	suspend permit
-	pause toggle
-return
-
-;暂停脚本，可以右键菜单选择或者用重启脚本恢复，不怎么需要用
-^!#z::
-	suspend permit
-	suspend toggle
-return
-
+ 
 
 ;+CapsLock:: CapsLock "之前的写法
 ;^PrintScreen::
@@ -981,84 +1389,7 @@ return
 Return
 
 
-;************** 分号;相关 ************** {{{2
-`; & j:: SendInput,{Blind}{Down}
-`; & k:: SendInput,{Blind}{Up}
-`; & h:: SendInput,{Blind}{Left}
-`; & l:: SendInput,{Blind}{Right}
-`; & n:: SendInput,{Blind}{PgDn}
-`; & m:: SendInput,{Blind}{PgUp}
-
-`; & Space:: SendInput,{Delete}
-
-`; & z::
-	GV_KeyClickAction1 := "SendInput,{Backspace}"
-	GV_KeyClickAction2 := "SendInput,+{Home}{Backspace}"
-	GoSub,Sub_KeyClick123
-return
-
-`; & x::
-	GV_KeyClickAction1 := "SendInput,{Delete}"
-	GV_KeyClickAction2 := "SendInput,+{End}{Delete}"
-	GoSub,Sub_KeyClick123
-return
-
-`; & c::
-	GV_KeyClickAction1 := "SendInput,^c"
-	GV_KeyClickAction2 := "SendInput,^{Home}^+{End}^c"
-	GoSub,Sub_KeyClick123
-return
-
-`; & b::
-	GV_KeyClickAction1 := "SendInput,^x"
-	GV_KeyClickAction2 := "SendInput,^{Home}^+{End}^x"
-	GoSub,Sub_KeyClick123
-return
-
-`; & v::
-	GV_KeyClickAction1 := "SendInput,^v"
-	GV_KeyClickAction2 := "SendInput,^{Home}^+{End}^v"
-	GoSub,Sub_KeyClick123
-return
-
-;粘贴然后回车，多用在搜索框等输入的位置
-`; & p::
-`; & g::
-	GV_KeyClickAction1 := "SendInput,^{Home}^+{End}^v{Enter}"
-	GV_KeyClickAction2 := "SendInput,^v{Enter}"
-	GoSub,Sub_KeyClick123
-return
-
-
-;搜索选中的文本
-`; & s::GoSub,Sub_SearchSelectTxt
-Sub_SearchSelectTxt:
-	clip:=
-	clip:=clipboard
-	If RegExMatch(clip, "^\d{6}$"){
-		Out := gv_url_tdx_f10 . clip . gv_url_html
-		run,%Out%
-	}
-	else{
-		run,http://www.baidu.com/s?ie=utf-8&wd=%clip%
-	}
-return
-
-;清空复制粘贴
-`; & d::SendInput,{Home}+{End}{Delete}
-`; & a::SendInput,^{Home}^+{End}{Delete}
-
-
-
-;粘贴并转到,多数浏览器和tc中都可用
-`; & u:: send,^t!d^v{Enter}
-;`; & u:: send,^t!dwww.^v{Enter}
-
-;`; & 1:: send,%A_YYYY%-%A_MM%-%A_DD%
-`; & 1:: send,% fun_GetFormatTime("yyyy-MM-dd")
-`; & 2:: AscSend(fun_GetFormatTime(" HHmm"))
-;`; & `:: SendRaw,% "#" . fun_GetFormatTime("MM-dd")
-`; & 3:: SendRaw,% "#" . fun_GetFormatTime("MMdd")
+;************** 分号;相关 ************** 
 
 ;恢复分号自身功能
 ;$`;:: SendInput,`;
@@ -1130,12 +1461,12 @@ return
 ;`::EzMenuShow()
 
 
-;************** Alttab相关 ************** {{{2
+;************** Alttab相关 **************  
 
 ;按住左键再进行滚轮，在AltaTab菜单中，可以点击右键或者按空格进行确认选择。
 ;多用在把文件拖到别的程序中打开，或者类似于qq微信传文件。也可以将浏览器中的图片直接拖到文件管理器中保存
-LButton & WheelUp::ShiftAltTab
-LButton & WheelDown::AltTab
+; LButton & WheelUp::ShiftAltTab
+; LButton & WheelDown::AltTab
 ;就没必要还用这个了
 ;LWin & WheelUp::ShiftAltTab
 ;LWin & WheelDown::AltTab
@@ -1190,14 +1521,8 @@ Space::send,{Alt Up}
 
 #IfWinActive
 
-;************** tab相关 ************** {{{2
+;************** tab相关 **************  
 ;基本操作上下左右，还可以扩展，主要用在左键右鼠的操作方式
-Tab & s:: SendInput,{Blind}{Down}
-Tab & w:: SendInput,{Blind}{Up}
-Tab & a:: SendInput,{Blind}{Left}
-Tab & d:: SendInput,{Blind}{Right}
-Tab & q:: SendInput,{Blind}{PgUp}
-Tab & f:: SendInput,{Blind}{PgDn}
 
 ;对应任务栏上固定的前5个程序快速切换
 Tab & 1:: send,#1
@@ -1205,23 +1530,6 @@ Tab & 2:: send,#2
 Tab & 3:: send,#3
 Tab & 4:: send,#4
 Tab & 5:: send,#5
-
-;常用的三个按键
-Tab & r:: SendInput,{Blind}{Del}
-Tab & e:: SendInput,{Blind}{Enter}
-Tab & space:: SendInput,{Blind}{Backspace}
-
-;右手模式，和caps一样，随便按哪一个都行，自由发挥吧
-Tab & j:: SendInput,{Blind}{Down}
-Tab & k:: SendInput,{Blind}{Up}
-Tab & h:: SendInput,{Blind}{Left}
-Tab & l:: SendInput,{Blind}{Right}
-Tab & n:: SendInput,{Blind}{PgDn}
-Tab & m:: SendInput,{Blind}{PgUp}
-Tab & u:: SendInput,{Blind}{End}
-Tab & i:: SendInput,{Blind}{Home}
-Tab & o:: SendInput,{Blind}{PgUp}
-Tab & p:: SendInput,{Blind}{PgDn}
 
 
 ;重要的alttab菜单
@@ -1291,7 +1599,7 @@ return
 ;ScrollLock::
 CapsLock & /::
 Escape & /::
-	GV_ToggleKeyMode := !GV_ToggleKeyMode
+;	GV_ToggleKeyMode := !GV_ToggleKeyMode
 return
 
 #If GV_ToggleKeyMode=1
@@ -1358,21 +1666,9 @@ w:: SendInput,^w
 
 #IfWinActive
 
-#IfWinActive, ahk_group group_disableCtrlSpace
-	^Space::Controlsend,,^{Space}
-	+Space::Controlsend,,+{Space}
-#IfWinActive
+ 
 
 
-;在任务栏上滚轮调整音量 {{{2
-#If MouseIsOver("ahk_class Shell_TrayWnd")
-WheelUp::Send {Volume_Up}
-WheelDown::Send {Volume_Down}
-#If
-MouseIsOver(WinTitle) {
-    MouseGetPos,,, Win
-    return WinExist(WinTitle . " ahk_id " . Win)
-}
 
 ;totalcmd中特殊的按住左键点右键移动
 ;#IfWinNotActive ahk_class TTOTAL_CMD
@@ -1391,107 +1687,28 @@ MouseIsOver(WinTitle) {
 #h::run, cmd
 ;管理员权限cmd
 ^#h::run, *RunAs cmd
-#c::run %COMMANDER_PATH%\Tools\notepad\Notepad.exe /c
-
-;************** 记事本 ************** {{{1
-
-;启动记事本并去标题等 {{{3
-#n::
-	run %COMMANDER_PATH%\Tools\notepad\Notepad.exe /f %COMMANDER_PATH%\Tools\notepad\Lite.ini, , , OutputVarPID
-	sleep 100
-	WinWait ahk_pid %OutputVarPID%
-	if ErrorLevel
-	{
-		MsgBox, WinWait timed out.
-		return
-	}
-	else
-	{
-		PID = %OutputVarPID%
-		WinGet, ThisHWND, ID, ahk_pid %PID% 
-		;设置位置和大小, x,y,width,height
-		;WinMove, ahk_id %ThisHWND%,, 700,400,550,350
-		WinMove, ahk_id %ThisHWND%,, 700,600,310,144
-		;WinMove, ahk_pid %PID%,, 700,400,550,350
-		;去标题
-		WinSet, Style, ^0xC00000, ahk_pid %PID%
-		;不能改变大小
-		;WinSet, Style, ^0x40000, ahk_pid %PID%
-		;去菜单
-		DllCall("SetMenu", "Ptr", ThisHWND, "Ptr", 0)
-		;顶端
-		;Winset, Alwaysontop, On,  ahk_pid %PID%
-	}
-return
-
-;启动记事本并去标题等，并收集剪贴板 {{{3
-^#b::
-	run %COMMANDER_PATH%\Tools\notepad\Notepad.exe /b /f %COMMANDER_PATH%\Tools\notepad\Lite.ini, , , OutputVarPID
-	sleep 100
-	WinWait ahk_pid %OutputVarPID%
-	if ErrorLevel
-	{
-		MsgBox, WinWait timed out.
-		return
-	}
-	else
-	{
-		PID = %OutputVarPID%
-		WinGet, ThisHWND, ID, ahk_pid %PID% 
-		;设置位置和大小, x,y,width,height
-		;WinMove, ahk_id %ThisHWND%,, 700,400,550,350
-		WinMove, ahk_id %ThisHWND%,, 700,600,310,144
-		;WinMove, ahk_pid %PID%,, 700,400,550,350
-		;去标题
-		WinSet, Style, ^0xC00000, ahk_pid %PID%
-		;不能改变大小
-		;WinSet, Style, ^0x40000, ahk_pid %PID%
-		;去菜单
-		DllCall("SetMenu", "Ptr", ThisHWND, "Ptr", 0)
-		;顶端
-		;Winset, Alwaysontop, On,  ahk_pid %PID%
-	}
-return
 
 
-
-;************** 小菜单例子 ************** {{{2
-;建议的绿色便携的小菜单程序PopSel
-;#z::run %COMMANDER_PATH%\Tools\popsel\PopSel.exe /pc /n /is
-;#RButton::run %COMMANDER_PATH%\Tools\popsel\PopSel.exe /n
-
+ 
 
 ;************** 各程序快捷键或功能 ************** {{{1
 ;调用任务栏相关程序快捷键 {{{2
-`; & Tab::
-	;Totalcmd
+
+
+`; & q::
 	send,#1
 return
 
-`; & Capslock::
-	;Vim
-	send,#2
-return
+; `; & w::
+; 	send,#2
+; return
 
-`; & q::
-	send,#3
-return
+ 
+; `; & t::
+; 	Run, C:\Program Files (x86)\Notepad++\notepad++.exe
+; return
 
-`; & w::
-	send,#4
-return
-
-`; & e::
-	send,#5
-return
-
-`; & r::
-	send,#6
-return
-
-`; & t::
-	send,#7
-return
+ 
 
 
 #IfWinActive ahk_class TXGuiFoundation       ;QQ,Tim
@@ -1575,7 +1792,6 @@ F1::Send,!p{tab}{enter}e
 		else
 			send,`,
 	return
-	CapsLock & y:: send,{AppsKey}
 	/*
 	   [:: send,{Home}{Down}
 	 */
@@ -1638,13 +1854,7 @@ TcSendPos(Number)
 	!;::ControlClick, EXCEL<1
 }
 
-;word中 {{{2
-;word2013: ahk_class OpusApp
-#IfWinActive ahk_exe winword.exe
-{
-	CapsLock & o:: send,^+{F6}
-	CapsLock & p:: send,^{F6}
-}
+ 
 
 ;快速目录切换 {{{2
 ;收藏的目录，
