@@ -73,6 +73,7 @@ CheckStrIsNull(inputStr)
    LenthA:=StrLen(inputStr)
     
    inputStr := StrReplace(inputStr, A_Space, "")
+   inputStr := StrReplace(inputStr, A_Tab, "")
    inputStr := StrReplace(inputStr, " ", "")
    LenthB:=StrLen(inputStr)
     
@@ -91,7 +92,6 @@ DeleteOneLine()
 {
   temp:=clipboard
   check:=CheckOutsideIsSpace()
-  ; msgBox,%check%
   Switch check 
   {
     ; 1是行头 2是行内有数据 3是本行全是空格
@@ -116,29 +116,34 @@ DeleteOneLine()
 ; 判断两边是否是空
 CheckOutsideIsSpace()
 {
-   clipboard := ""
+   clipboard :=
    SendInput,{End}
    SendInput,+{Home}
    SendInput,^c
    ClipWait,0.2
-   LenthA:=StrLen(clipboard)
-   ; msgBox,%clipboard%
-   ; msgBox,%LenthA%
-   clipboard := StrReplace(clipboard, A_Space, "")
-   clipboard := StrReplace(clipboard, " ", "")
-   LenthB:=StrLen(clipboard)
-   ; msgBox,%clipboard%
-   ; msgBox,%LenthB%
+   checkedStr:=clipboard
+   LenthA:=StrLen(checkedStr)
+   ; msgBox,剪切板初始值:%checkedStr%
+   ; msgBox,初始长度:%LenthA%
+   ; 替换掉空格,tab缩进和" "
+   checkedStr := StrReplace(checkedStr, A_Space, "")
+   checkedStr := StrReplace(checkedStr, A_Tab, "")
+   checkedStr := StrReplace(checkedStr, " ", "")
+   LenthB:=StrLen(checkedStr)
+   ; msgBox,剪切板第二次:%checkedStr%
+   ; msgBox,第二次长度%LenthB%
    ; 让光标返回到最后面
    SendInput,{End}
    ; 这个要先验证 不然就返回2了  
-   ; a不等于b就说明a是有空格的,b是把空格全部替换掉,如果等于0了就代表这行
+   
+   ; 1是行头 2是行内有数据 3是本行全是空格
+   ; 初始长度不相等,但是最后替换了空格的长度是0就说明这行全是空格
    if(LenthA!=LenthB and LenthB=0)
    {
      ; 全是空格 全是空格需要特殊处理
      return "3"
    }
-   if(StrLen(clipboard)=0)
+   if(StrLen(checkedStr)=0)
    {
      return "1"
    }
@@ -410,41 +415,98 @@ return
 
 
 ;************** 剪切板相关开始 ************** 
+;$^c::
+;{
+;  clipboard=
+;  SendInput,^c
+;  IfWinActive,ahk_exe chrome.exe
+;  {
+;     ; clipWait方法,只会判断剪切板是否为空 只要之前有值也是返回true的
+;     ClipWait, 0.8
+;     ; 判断剪切板是否为空
+;     ; msgBox,%clipboard%
+;     content :=  clipboard
+;     ; 匹配正则开始
+; 
+;	 content := RegExReplace(content, "—{8,}[\s\S]*原文链接：https?://blog\.csdn\.net[\s\S]*$","")
+;	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.zhihu.com[\s\S]*$","")
+; 	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.imooc.com[\s\S]*$","")
+;	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.jianshu.com[\s\S]*$","")
+;	 ; 把最后的空格或者换行符移除掉 上面是.*? 匹配非换行符
+;	 
+;	 content := RegExReplace(content, "`as)\s+$")
+;     ; 匹配正则结束
+;     clipboard := content
+;  }	
+;  return
+;}
+
+; 增强剪切板 如果没选中任何东西就复制一整行 
+; 一些软件不打开
+GroupAdd,CopyGroup,ahk_exe devenv.exe
+GroupAdd,CopyGroup,ahk_exe Totalcmd64.exe
+
+  
 $^c::
+IfWinNotActive,ahk_group CopyGroup
 {
-  clipboard=
-  SendInput,^c
-  IfWinActive,ahk_exe chrome.exe
-  {
-     ; clipWait方法,只会判断剪切板是否为空 只要之前有值也是返回true的
-     ClipWait, 0.8
-     ; 判断剪切板是否为空
-     ; msgBox,%clipboard%
-     content :=  clipboard
-     ; 匹配正则开始
- 
-	 content := RegExReplace(content, "—{8,}[\s\S]*原文链接：https?://blog\.csdn\.net[\s\S]*$","")
-	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.zhihu.com[\s\S]*$","")
- 	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.imooc.com[\s\S]*$","")
-	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.jianshu.com[\s\S]*$","")
-	 ; 把最后的空格或者换行符移除掉 上面是.*? 匹配非换行符
-	 
-	 content := RegExReplace(content, "`as)\s+$")
-     ; 匹配正则结束
-     clipboard := content
-  }	
-  return
+    clipboard = 
+	SendInput,^c
+	; 判断剪切板是否为空
+	ClipWait,0.2
+	; 浏览器要用,但是某一部分不要用
+    if(clipboard=""  and !(WinActive("ahk_exe chrome.exe")))
+ 	{
+ 	    ; 如果为空就全部复制
+        SendInput,{End}+{Home}
+	    SendInput,^c
+	    SendInput,{End}
+ 	}
+	; 去掉浏览器的小尾巴
+    IfWinActive,ahk_exe chrome.exe
+	{
+		content := Clipboard
+		; 匹配正则开始
+		content := RegExReplace(content, "—{8,}[\s\S]*原文链接：https?://blog\.csdn\.net[\s\S]*$","")
+	    content := RegExReplace(content, "作者：[\s\S]*链接：https://www.zhihu.com[\s\S]*$","")
+ 	    content := RegExReplace(content, "作者：[\s\S]*链接：https://www.imooc.com[\s\S]*$","")
+	    content := RegExReplace(content, "作者：[\s\S]*链接：https://www.jianshu.com[\s\S]*$","")
+		; 把最后的空格或者换行符移除掉 上面是.*? 匹配非换行符 
+	    content := RegExReplace(content, "`as)\s+$")
+		; 匹配正则结束
+		Clipboard := content
+		Return
+	}
 }
-
-; ctrl+shift+c整行复制
-+^c:: SendInput,{Home}+{End}^c{End}
- 
-
-+^x::
-	 SendInput,{End}{Shift Down}{Home}{Shift Up}
-	   SendInput,^x
-	   SendInput,{End}
+else
+{
+	 
+}	
 return
+
+
+$^x::
+IfWinNotActive,ahk_group CopyGroup
+{
+    clipboard = 
+	SendInput,^x
+	; 判断剪切板是否为空
+	ClipWait,0.2
+	; 浏览器要用,但是某一部分不要用
+    if(clipboard=""  and !(WinActive("ahk_exe chrome.exe")))
+ 	{
+ 	    ; 如果为空就全部复制
+		SendInput,{End}+{Home}
+		SendInput,^x
+		SendInput,+{Home}{BackSpace 2}
+ 	}
+}
+else
+{
+	 
+}	
+return
+ 
  
 `; & v::SendInput,^v
 ;************** 剪切板相关结束 ************** 
