@@ -250,7 +250,7 @@ CheckRightWord(){
 
 CapsLock::
 	suspend permit
-	SendInput,{Escape}
+	 
 return
 
 ; ctrl+caps恢复大写
@@ -396,50 +396,29 @@ sleep,100
 Send,{Space 2}
 return 
  
+ ;在Vs中不生效 然后把Vs的快捷键重新定义一下成为不常用的,就可以了
 ^+Space::
-; 判断剪切板是否有值
-Send,^j
-sleep,100
-Send,{Space 2}
-; 如果剪切板中有值就直接粘贴
-if(!CheckClipIsEmpty())
 {
- Send,^v
- Sleep,200
- Send,{Enter}
-}
+   ; 判断剪切板是否有值
+	Send,^j
+	sleep,100
+	Send,{Space 2}
+	; 如果剪切板中有值就直接粘贴
+	if(!CheckClipIsEmpty())
+	{
+		Send,^v
+		Sleep,200
+		Send,{Enter}
+	}	
 return
+}
+ 
 
 ;************** 我的其他Ahk代码结束 ************** 
 
 
 
 ;************** 剪切板相关开始 ************** 
-;$^c::
-;{
-;  clipboard=
-;  SendInput,^c
-;  IfWinActive,ahk_exe chrome.exe
-;  {
-;     ; clipWait方法,只会判断剪切板是否为空 只要之前有值也是返回true的
-;     ClipWait, 0.8
-;     ; 判断剪切板是否为空
-;     ; msgBox,%clipboard%
-;     content :=  clipboard
-;     ; 匹配正则开始
-; 
-;	 content := RegExReplace(content, "—{8,}[\s\S]*原文链接：https?://blog\.csdn\.net[\s\S]*$","")
-;	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.zhihu.com[\s\S]*$","")
-; 	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.imooc.com[\s\S]*$","")
-;	 content := RegExReplace(content, "作者：[\s\S]*链接：https://www.jianshu.com[\s\S]*$","")
-;	 ; 把最后的空格或者换行符移除掉 上面是.*? 匹配非换行符
-;	 
-;	 content := RegExReplace(content, "`as)\s+$")
-;     ; 匹配正则结束
-;     clipboard := content
-;  }	
-;  return
-;}
 
 ; 增强剪切板 如果没选中任何东西就复制一整行 
 ; 一些软件不打开
@@ -537,6 +516,12 @@ CapsLock & [::
 }
 
 +RButton::Send,^+.
+
+^+Space::
+{
+   Send,{Ctrl Down}kp{Ctrl Up}
+   return 
+}
 
 
 #IfWinActive
