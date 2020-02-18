@@ -299,7 +299,7 @@ CapsLock & )::Send, (){Left}
 ; 加数字变大写 重写结束
 
 
-; 解决按了以后锁定大写的问题
+; 解决按了以后锁定大写问题
  
 CapsLock & q::SendInput,q
 CapsLock & u::SendInput,u
@@ -308,6 +308,7 @@ CapsLock & y::SendInput,y
 CapsLock & p::SendInput,p
 CapsLock & v::SendInput,v
 CapsLock & t::SendInput,t
+CapsLock & a::SendInput,a
 
 ; 解决按了以后锁定大写的问题
 
@@ -406,12 +407,12 @@ return
 ^+Space::
 {
    ; 判断剪切板是否有值
-	Send,^j
-	sleep,100
-	Send,{Space 2}
-	; 如果剪切板中有值就直接粘贴
-	if(!CheckClipIsEmpty())
+   if(!CheckClipIsEmpty())
 	{
+	    Send,^j
+	    sleep,100
+	    Send,{Space 2}
+	    ; 如果剪切板中有值就直接粘贴
 		Send,^v
 		Sleep,200
 		Send,{Enter}
