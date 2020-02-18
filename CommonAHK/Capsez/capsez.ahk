@@ -2,8 +2,7 @@
 
 
 ;  CapsLock & d   用于复制   
-
-
+;  !Alt ^Ctrl   +Shift &用于连接两个按键(含鼠标按键)  RButton 右键  MButton 鼠标中键 
 
 
  
@@ -52,6 +51,12 @@ return
 
 
 ;************** 自定义方法开始 **************
+
+;按控件内坐标点击
+CoordWinClick(x,y){
+	CoordMode, Mouse, Window
+	click %x%, %y%
+}
 
 Sub_MaxRestore:
 	WinGet, Status_minmax ,MinMax,A
@@ -413,6 +418,31 @@ return
 	}	
 return
 }
+
+
+; qq和Tim 按alt+d  其他的可以继续扩展
+$!d::
+	; 判断是微信
+	IfWinActive,ahk_class WeChatMainWndForPC
+	{
+		WinGetPos, wxx, wxy,wxw,wxh, ahk_class WeChatMainWndForPC
+		wxw := wxw - 80
+		wxh := wxh - 60
+		 
+		CoordWinClick(wxw,wxh)
+		return
+	}
+	IfWinActive,ahk_class TXGuiFoundation
+	{
+		WinGetPos, wxx, wxy,wxw,wxh, ahk_class TXGuiFoundation
+		wxw := wxw - 380
+		wxh := wxh - 100
+		 
+		CoordWinClick(wxw,wxh)
+		return
+	}
+	Send,!d
+	return
  
 
 ;************** 我的其他Ahk代码结束 ************** 
