@@ -309,6 +309,7 @@ CapsLock & p::SendInput,p
 CapsLock & v::SendInput,v
 CapsLock & t::SendInput,t
 CapsLock & a::SendInput,a
+CapsLock & x::SendInput,x
 
 ; 解决按了以后锁定大写的问题
 
