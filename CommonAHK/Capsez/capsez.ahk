@@ -180,46 +180,17 @@ CheckWordLeftOrRight()
 
 CheckClipIsEmpty()
 {
-
-tempClip:=clipboard
-if(tempClip="")
-{
-  return true
-}
-else
-{
-  return false
-}
-}
-
-; win+e 如果剪切板中是路径就直接打开
-#e::
-{
-
-tempClip:=clipboard
-Sleep,200
-strIndex1:=InStr(tempClip,":\") 
-strIndex2:=InStr(tempClip,":/")
-; 如果是文件就不打开
-strIndex3:=InStr(tempClip,".")
-SendInput,#e
-if((strIndex1 > 0 || strIndex2 > 0) && strIndex3 = 0)
-{
-  ; msgBox,33
-  Sleep,500
-  Send,!d
-  Sleep,200
-  Send,^v
-  Sleep,100
-  Send,{Enter}
-}
-else
-{
-; msgBox,44
+  tempClip:=clipboard
+  if(tempClip="")
+  {
+    return true
+  }
+  else
+  {
+    return false
+  }
 }
 
-return 
-}
 
 ; 向左选中一个单词并取消掉最后的一个空格
 CheckLeftWord(){
@@ -244,6 +215,26 @@ return
 CheckRightWord(){
 	SendInput,{Right}
 	CheckLeftWord()
+}
+
+CheckIsXing(isLeft)
+{
+  clipboard=
+  if(isLeft=="zuo")
+  {
+    Send,+{Left}
+  }
+  else
+  {
+    Send,+{Right}
+  }
+  Send,^c
+  sleep,200
+  if(clipboard="*")
+  {
+   return true
+  }
+  return false
 }
 
 
@@ -421,6 +412,33 @@ return
 return
 }
 
+; win+e 如果剪切板中是路径就直接打开
+#e::
+{
+tempClip:=clipboard
+Sleep,200
+strIndex1:=InStr(tempClip,":\") 
+strIndex2:=InStr(tempClip,":/")
+; 如果是文件就不打开
+strIndex3:=InStr(tempClip,".")
+SendInput,#e
+if((strIndex1 > 0 || strIndex2 > 0) && strIndex3 = 0)
+{
+  ; msgBox,33
+  Sleep,500
+  Send,!d
+  Sleep,200
+  Send,^v
+  Sleep,100
+  Send,{Enter}
+}
+else
+{
+; msgBox,44
+}
+
+return 
+}
 
 ; qq和Tim 按alt+d  其他的可以继续扩展
 $!d::
@@ -452,18 +470,27 @@ CapsLock & `::
 {
    IfWinActive,ahk_exe navicat.exe
   	{
+	    temp:=clipboard
 		; 判断左右有没有值然后在单词左右附加`
 		isLeft:=CheckWordLeftOrRight()
+		isXing:=CheckIsXing(isLeft)
+		
+	    if(isXing=1)
+		{
+		  Send,{Left}``{Right}``
+		  return
+		}
 		; 左边输入没问题 现在如果是返回右直接发一个ctrl右变成和左边一样
 		if(isLeft="you")
 		{
 		  SendInput,^{Right}
 		}
+		
 		 SendInput,^{Left}```
-			 SendInput,^{Right}```
-			return
+		 SendInput,^{Right}```
+		 clipboard:=temp
+		 return
   	}
-  Send,``
   return
 		
 }
