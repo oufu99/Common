@@ -492,7 +492,6 @@ CapsLock & `::
 		 return
   	}
   return
-		
 }
 
 
