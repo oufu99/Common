@@ -424,6 +424,7 @@ return
 
 ; qq和Tim 按alt+d  其他的可以继续扩展
 $!d::
+{
 	; 判断是微信
 	IfWinActive,ahk_class WeChatMainWndForPC
 	{
@@ -445,7 +446,33 @@ $!d::
 	}
 	Send,!d
 	return
- 
+}
+
+CapsLock & `::
+{
+   IfWinActive,ahk_exe navicat.exe
+  	{
+		; 判断左右有没有值然后在单词左右附加`
+		isLeft:=CheckWordLeftOrRight()
+		if(isLeft="zuo")
+		{
+			 SendInput,^{Left}```
+			 SendInput,^{Right}```
+			return
+		}
+		else
+		{
+		     SendInput,^{Right}``
+			 SendInput,^{Left 2}``
+			 ;SendInput,^{Right}{Right}
+		}
+		
+  	}
+  Send,``
+  return
+		
+}
+
 
 ;************** 我的其他Ahk代码结束 ************** 
 
