@@ -454,19 +454,14 @@ CapsLock & `::
   	{
 		; 判断左右有没有值然后在单词左右附加`
 		isLeft:=CheckWordLeftOrRight()
-		if(isLeft="zuo")
+		; 左边输入没问题 现在如果是返回右直接发一个ctrl右变成和左边一样
+		if(isLeft="you")
 		{
-			 SendInput,^{Left}```
+		  SendInput,^{Right}
+		}
+		 SendInput,^{Left}```
 			 SendInput,^{Right}```
 			return
-		}
-		else
-		{
-		     SendInput,^{Right}``
-			 SendInput,^{Left 2}``
-			 ;SendInput,^{Right}{Right}
-		}
-		
   	}
   Send,``
   return
