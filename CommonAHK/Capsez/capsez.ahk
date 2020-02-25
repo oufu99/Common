@@ -364,10 +364,10 @@ Tab & j:: SendInput,+{Down}
 Tab & l:: SendInput,+{Right}
 Tab & k:: SendInput,+{Up}}
 
-Tab & b:: SendInput,+^{Home}
-Tab & e:: SendInput,+^{End}
-Tab & n:: SendInput,+^{Right}
-Tab & m:: SendInput,+^{Left}
+Tab & b:: SendInput,+{Home}
+Tab & e:: SendInput,+{End}
+Tab & n:: SendInput,+{Right}
+Tab & m:: SendInput,+{Left}
 
 
 Tab & r:: SendInput,{Blind}+^{Left}
@@ -447,6 +447,8 @@ $!d::
 	IfWinActive,ahk_class WeChatMainWndForPC
 	{
 		WinGetPos, wxx, wxy,wxw,wxh, ahk_class WeChatMainWndForPC
+		msgBox,%wxw%
+		msgBox,%wxh%
 		wxw := wxw - 80
 		wxh := wxh - 60
 		 
@@ -455,13 +457,21 @@ $!d::
 	}
 	IfWinActive,ahk_class TXGuiFoundation
 	{
-		WinGetPos, wxx, wxy,wxw,wxh, ahk_class TXGuiFoundation
-		wxw := wxw - 380
-		wxh := wxh - 100
-		 
+	    WinGetActiveStats, Title, wxw, wxh, X, Y
+		wxw := wxw - 480
+		wxh := wxh - 70
 		CoordWinClick(wxw,wxh)
 		return
 	}
+	IfWinActive,ahk_class StandardFrame_DingTalk
+	{
+	    WinGetActiveStats, Title, wxw, wxh, X, Y
+		wxw := wxw - 180
+		wxh := wxh - 70
+		CoordWinClick(wxw,wxh)
+		return
+	}
+	
 	Send,!d
 	return
 }
