@@ -96,6 +96,15 @@ CheckStrIsNull(inputStr)
 DeleteOneLine()
 {
   temp:=clipboard
+  clipboard:=
+  ; 判断是否有选中
+  Send,^c
+  ClipWait,0.2
+  if(clipboard!="")
+  {
+    SendInput,{Backspace}
+	return
+  }
   check:=CheckOutsideIsSpace()
   Switch check 
   {
