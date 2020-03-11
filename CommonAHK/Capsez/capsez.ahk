@@ -97,7 +97,39 @@ DeleteOneLine()
 {
   temp:=clipboard
   clipboard:=
-  
+  ; 新增如果有复制就只删除这一点
+  SendInput,^c
+  ClipWait,0.2
+  ;if(CheckClipIsEmpty())
+  ;{
+  ;  Send,{BackSpace}
+	;return
+  ;}
+  ;IfWinActive,ahk_exe devenv.exe
+  ;{
+  ;      Vstmep1:=TrimSpace(clipboard)
+	;	clipboard:=
+	;	SendInput,{End}+{Home}
+	;	SendInput,^c
+	;	ClipWait,0.2
+	;	Vstmep2:=TrimSpace(clipboard)
+	;	le1:=StrLen(Vstmep1) 
+	;    le2:=StrLen(Vstmep2) 	
+	;     	
+	;	msgBox,%le1%
+	;	msgBox,%le2%
+	;	msgBox,StrLen(Vstmep2) 
+	;	if(Vstmep1=Vstmep2)
+	;	{
+	;	  msgBox,11
+	;	}
+	;	else
+	;	{
+	;      msgBox,22
+	;	  Send,{BackSpace}
+	;	  return
+	;	}
+  ;}
   check:=CheckOutsideIsSpace()
   Switch check 
   {
@@ -117,7 +149,7 @@ DeleteOneLine()
     }
   }
   clipboard:=temp
-  Return
+  return
 }
 
 ; 判断两边是否是空
@@ -162,12 +194,10 @@ CheckOutsideIsSpace()
 
 TrimSpace(str)
 {
-
    str := StrReplace(str, A_Space, "")
    str := StrReplace(str, A_Tab, "")
    str := StrReplace(str, " ", "")
    return str
-
 }
 
  
@@ -535,7 +565,7 @@ IfWinNotActive,ahk_group CopyGroup
     clipboard = 
 	SendInput,^c
 	; 判断剪切板是否为空
-	ClipWait,0.2
+	ClipWait,0.1
 	; 浏览器要用,但是某一部分不要用
     if(clipboard=""  and !(WinActive("ahk_exe chrome.exe")))
  	{
