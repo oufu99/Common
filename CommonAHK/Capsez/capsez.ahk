@@ -97,14 +97,7 @@ DeleteOneLine()
 {
   temp:=clipboard
   clipboard:=
-  ; 判断是否有选中
-  Send,^c
-  ClipWait,0.2
-  if(clipboard!="")
-  {
-    SendInput,{Backspace}
-	return
-  }
+  
   check:=CheckOutsideIsSpace()
   Switch check 
   {
@@ -165,6 +158,16 @@ CheckOutsideIsSpace()
    {
       return "2"
    }
+}
+
+TrimSpace(str)
+{
+
+   str := StrReplace(str, A_Space, "")
+   str := StrReplace(str, A_Tab, "")
+   str := StrReplace(str, " ", "")
+   return str
+
 }
 
  
