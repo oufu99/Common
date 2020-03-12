@@ -33,10 +33,11 @@ return
 ;************** 两个关键字结束 **************
 
 
+
 ; ;************** 自动重启脚本开始 ************** 
 ;设定15分钟重启一次脚本，防止卡键 1000*60*15
-GV_ReloadTimer := % 1000*60*15
-
+;GV_ReloadTimer := % 1000*60*15
+GV_ReloadTimer := % 1000*5*1 
 
 Gosub,AutoReloadInit
 AutoReloadInit:
@@ -44,10 +45,10 @@ AutoReloadInit:
 return
 
 SelfReload:
+    msgBox,11
 	reload
 return
 ;************** 自动重启脚本结束 ************** 
-
 
 
 ;************** 自定义方法开始 **************
@@ -97,39 +98,7 @@ DeleteOneLine()
 {
   temp:=clipboard
   clipboard:=
-  ; 新增如果有复制就只删除这一点
-  SendInput,^c
-  ClipWait,0.2
-  ;if(CheckClipIsEmpty())
-  ;{
-  ;  Send,{BackSpace}
-	;return
-  ;}
-  ;IfWinActive,ahk_exe devenv.exe
-  ;{
-  ;      Vstmep1:=TrimSpace(clipboard)
-	;	clipboard:=
-	;	SendInput,{End}+{Home}
-	;	SendInput,^c
-	;	ClipWait,0.2
-	;	Vstmep2:=TrimSpace(clipboard)
-	;	le1:=StrLen(Vstmep1) 
-	;    le2:=StrLen(Vstmep2) 	
-	;     	
-	;	msgBox,%le1%
-	;	msgBox,%le2%
-	;	msgBox,StrLen(Vstmep2) 
-	;	if(Vstmep1=Vstmep2)
-	;	{
-	;	  msgBox,11
-	;	}
-	;	else
-	;	{
-	;      msgBox,22
-	;	  Send,{BackSpace}
-	;	  return
-	;	}
-  ;}
+
   check:=CheckOutsideIsSpace()
   Switch check 
   {
@@ -194,6 +163,7 @@ CheckOutsideIsSpace()
 
 TrimSpace(str)
 {
+   str := RegExReplace(str, "\s","")
    str := StrReplace(str, A_Space, "")
    str := StrReplace(str, A_Tab, "")
    str := StrReplace(str, " ", "")
@@ -277,6 +247,22 @@ CheckIsXing(isLeft)
    return true
   }
   return false
+}
+
+; 写txt 写文件 文本文件 读写文件相关
+WriteFile(path,content)
+{
+     file := FileOpen(path,3,"UTF-8-RAW")
+	 Sleep,200
+	 file.write(content)
+	 file.Close()
+}
+
+
+ReadText(path)
+{
+ FileRead,OutputVar,*P65001 %path%
+ return OutputVar
 }
 
 
