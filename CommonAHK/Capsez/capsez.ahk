@@ -636,11 +636,11 @@ CapsLock & [::
 
 +RButton::Send,^+.
 
-^+Space::
-{
-   Send,{Ctrl Down}kp{Ctrl Up}
-   return 
-}
+; ^+Space::
+; {
+;    Send,{Ctrl Down}kp{Ctrl Up}
+;    return 
+; }
 
 
 #IfWinActive
