@@ -424,7 +424,7 @@ Send,{Space 2}
 return 
  
  ;在Vs中不生效 然后把Vs的快捷键重新定义一下成为不常用的,就可以了
-^+Space::
++Space::
 {
    ; 判断剪切板是否有值
    if(!CheckClipIsEmpty())
@@ -635,12 +635,6 @@ CapsLock & [::
 }
 
 +RButton::Send,^+.
-
-; ^+Space::
-; {
-;    Send,{Ctrl Down}kp{Ctrl Up}
-;    return 
-; }
 
 
 #IfWinActive
